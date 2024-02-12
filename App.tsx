@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -15,6 +15,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Button
 } from 'react-native';
 
 import {
@@ -24,6 +25,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import auth from '@react-native-firebase/auth';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -56,14 +58,32 @@ function Section({children, title}: SectionProps): React.JSX.Element {
 }
 
 function App(): React.JSX.Element {
+  useEffect(() => {
+  const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  return subscriber;
+  }, []);
+  const onAuthStateChanged = (user) => {
+  if (user) {
+  console.log("The user is signed in");
+  } else {
+  console.log("Nope")
+  }
+  };
+  const signIn = async() => {
+  	try {
+	await auth().signInAnonymously();
+	console.log("user signed in");
+	} catch (error) {
+	console.error("failed to sign in",error);
+	}
+  };
   const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+   <SafeAreaView style={backgroundStyle}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
@@ -83,7 +103,11 @@ function App(): React.JSX.Element {
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
-          <Section title="Debug">
+         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome to the Firebase Test App</Text>
+      <Button title="Sign In Anonymously" onPress={signIn} />
+    </View> 
+	  <Section title="Debug">
             <DebugInstructions />
           </Section>
           <Section title="Learn More">

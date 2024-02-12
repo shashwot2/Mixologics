@@ -1,4 +1,4 @@
-package com.mixologist
+package com.mixologics.mixologics
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
