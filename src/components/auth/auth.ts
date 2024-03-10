@@ -7,18 +7,18 @@ export const onAuthStateChanged = (
   return auth().onAuthStateChanged(callback);
 };
 GoogleSignin.configure({
-	webClientId: Config.WEB_CLIENT_ID,
+  webClientId: Config.WEB_CLIENT_ID,
 });
- 
+
 export const signInWithGoogle =
   async (): Promise<FirebaseAuthTypes.UserCredential> => {
     try {
-    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-    const {idToken} = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    return auth().signInWithCredential(googleCredential);
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      const {idToken} = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      return auth().signInWithCredential(googleCredential);
     } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
+      console.error(error);
+      return null;
+    }
+  };
