@@ -16,14 +16,14 @@ const App: React.FC = () => {
   }, []);
 
   return (
-      <NavigationContainer>
+    <NavigationContainer>
       <Stack.Navigator>
-      {user ? (
-      	<Stack.Screen name="Home" component={HomeScreen} />
-	) : (
-	<Stack.Screen name="Login" component={LoginScreen} />
-	)}
-            </Stack.Navigator>
+        {user ? (
+          <Stack.Screen name="Home" component={HomeScreen} />
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

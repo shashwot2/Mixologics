@@ -2,7 +2,6 @@ import React from 'react';
 import {SafeAreaView, View, Text, Button, StyleSheet} from 'react-native';
 
 const HomeScreen: React.FC = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -30,4 +29,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-

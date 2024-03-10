@@ -9,7 +9,7 @@ const LoginScreen: React.FC = () => {
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Welcome to the App!</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
-        
+
         <GoogleSigninButton
           style={{width: 192, height: 48}} // You can adjust the size as needed
           size={GoogleSigninButton.Size.Wide}
@@ -44,4 +44,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
