@@ -22,3 +22,4 @@ export const signInWithGoogle =
     return null;
   }
 };
+

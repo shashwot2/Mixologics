@@ -1,30 +1,30 @@
-import React, {useEffect} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
-import {onAuthStateChanged, signInWithGoogle} from './src/components/auth/auth';
-import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
+import React, {useEffect, useState} from 'react';
+import 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {onAuthStateChanged} from '@auth/auth';
+
+import HomeScreen from '@components/HomeScreen/HomeScreen';
+import LoginScreen from '@components/LoginScreen/LoginScreen';
+import {Text, View} from 'react-native';
+const Stack = createStackNavigator();
 const App: React.FC = () => {
+  const [user, setUser] = useState(null);
   useEffect(() => {
-    const subscriber = onAuthStateChanged(user => {
-      if (user) {
-        console.log('The user is signed in');
-      } else {
-        console.log('Nope');
-      }
-    });
+    const subscriber = onAuthStateChanged(setUser);
     return subscriber;
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Welcome to the Firebase Test App</Text>
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={() => signInWithGoogle()}
-        />
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {user ? (
+          <Stack.Screen name="Home" component={HomeScreen} />
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
