@@ -3,11 +3,11 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {onAuthStateChanged} from '@auth/auth';
-const Stack = createStackNavigator();
 
-import HomeScreen from './src/components/HomeScreen/HomeScreen';
-import LoginScreen from './src/components/LoginScreen/LoginScreen';
+import HomeScreen from '@components/HomeScreen/HomeScreen';
+import LoginScreen from '@components/LoginScreen/LoginScreen';
 import {Text, View} from 'react-native';
+const Stack = createStackNavigator();
 const App: React.FC = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
