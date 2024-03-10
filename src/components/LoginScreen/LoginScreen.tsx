@@ -1,7 +1,7 @@
 import React from 'react';
 import {SafeAreaView, View, Text, StyleSheet} from 'react-native';
 import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
-import {signInWithGoogle} from '@auth/auth'; // Adjust the path as necessary
+import {signInWithGoogle} from '@auth/auth';
 
 const LoginScreen: React.FC = () => {
   return (
@@ -11,12 +11,12 @@ const LoginScreen: React.FC = () => {
         <Text style={styles.subtitle}>Sign in to continue</Text>
 
         <GoogleSigninButton
-          style={{width: 192, height: 48}} // You can adjust the size as needed
+          style={{width: 192, height: 48}} 
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Dark}
           onPress={signInWithGoogle}
         />
-        {/* You can add more sign-in options here */}
+
       </View>
     </SafeAreaView>
   );
