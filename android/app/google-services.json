@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "598909244750",
+    "project_id": "mixologics-c6d59",
+    "storage_bucket": "mixologics-c6d59.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598909244750:android:1b6fd151919f072a2eba1f",
+        "android_client_info": {
+          "package_name": "com.mixologics.mixologics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598909244750-7jcl4m9ghg4iq2pijd3f66civdd3q2ij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJdxGpDBGIT6Bg_2DAdXppEaUIDwz6HvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598909244750-7jcl4m9ghg4iq2pijd3f66civdd3q2ij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
