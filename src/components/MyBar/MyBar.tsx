@@ -12,103 +12,109 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 const categories = ['Spirits', 'Mixers', 'Fruits', 'Herbs', 'Flavoring'];
 const MyBar: React.FC = () => {
-const [activeCategory, setActiveCategory] = useState('Spirits');
-const dummyData = {
-   "Spirits": [
-    {
-      "id": "001",
-      "name": "Vodka",
-      "category": "plain",
-      "icon": "@assets/mybaricons/vodka.png"
-    },
-    {
-      "id": "002",
-      "name": "Champagne",
-      "category": "sparkling",
-      "icon": "@assets/mybaricons/champagne.png"
-    },
-    {
-      "id": "003",
-      "name": "Whisky",
-      "category": "scotch",
-      "icon": "@assets/mybaricons/whisky.png"
-    }
-  ],
-  "Mixers": [
-  {
-  "id":"001",
-  "name":"Coke",
-  "category":"soda",
-  "icon":"@assets/mybaricons/coke.png"}],
-  "Fruits": [],
-  "Herbs": [],
-  "Flavorings": [],
+  const [activeCategory, setActiveCategory] = useState('Spirits');
+  const dummyData = {
+    Spirits: [
+      {
+        id: '001',
+        name: 'Vodka',
+        category: 'plain',
+        icon: '@assets/mybaricons/vodka.png',
+      },
+      {
+        id: '002',
+        name: 'Champagne',
+        category: 'sparkling',
+        icon: '@assets/mybaricons/champagne.png',
+      },
+      {
+        id: '003',
+        name: 'Whisky',
+        category: 'scotch',
+        icon: '@assets/mybaricons/whisky.png',
+      },
+    ],
+    Mixers: [
+      {
+        id: '001',
+        name: 'Coke',
+        category: 'soda',
+        icon: '@assets/mybaricons/coke.png',
+      },
+    ],
+    Fruits: [],
+    Herbs: [],
+    Flavorings: [],
   };
   const activeItems = dummyData[activeCategory];
-// Function to resolve the correct image
-const resolveIcon = (iconPath) => {
-  const iconName = iconPath.split('/').pop();
-  
-  const iconMap = {
-    'vodka.png': require('@assets/mybaricons/vodka.png'),
-    'champagne.png': require('@assets/mybaricons/champagne.png'),
-    'whisky.png': require('@assets/mybaricons/whisky.png'),
-    'coke.png': require('@assets/mybaricons/coke.jpg'),
+  // Function to resolve the correct image
+  const resolveIcon = iconPath => {
+    const iconName = iconPath.split('/').pop();
+
+    const iconMap = {
+      'vodka.png': require('@assets/mybaricons/vodka.png'),
+      'champagne.png': require('@assets/mybaricons/champagne.png'),
+      'whisky.png': require('@assets/mybaricons/whisky.png'),
+      'coke.png': require('@assets/mybaricons/coke.jpg'),
+    };
+    return iconMap[iconName];
   };
-  return iconMap[iconName];
-};
   return (
-  <View style={styles.container}>
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.tabsContainer}>
-      {categories.map(category => {
-        const isActive = activeCategory === category;
-        return (
-          <TouchableOpacity
-            key={category}
-            onPress={() => setActiveCategory(category)}
-            style={[
-              styles.tab,
-              activeCategory === category && styles.activeTab,
-            ]}>
-            {isActive ? (
-              <LinearGradient
-                colors={['#FF34D3', '#0094FF']}
-                style={styles.gradient}>
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.tabsContainer}>
+        {categories.map(category => {
+          const isActive = activeCategory === category;
+          return (
+            <TouchableOpacity
+              key={category}
+              onPress={() => setActiveCategory(category)}
+              style={[
+                styles.tab,
+                activeCategory === category && styles.activeTab,
+              ]}>
+              {isActive ? (
+                <LinearGradient
+                  colors={['#FF34D3', '#0094FF']}
+                  style={styles.gradient}>
+                  <Text style={styles.tabText}>{category}</Text>
+                </LinearGradient>
+              ) : (
                 <Text style={styles.tabText}>{category}</Text>
-              </LinearGradient>
-            ) : (
-              <Text style={styles.tabText}>{category}</Text>
-            )}
-          </TouchableOpacity>
-        );
-      })}
-    </ScrollView>
-<FlatList
-  data={activeItems}
-  keyExtractor={item => item.id}
-  contentContainerStyle={{ flexGrow:1, justifyContent:'flex-start' }}
-  style={styles.flatlist}
-  renderItem={({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image source={resolveIcon(item.icon)} style={styles.icon} />
-      <Text style={styles.itemText}>{item.name}</Text>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+      <FlatList
+        data={activeItems}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-start'}}
+        renderItem={({item}) => (
+          <View style={styles.itemContainer}>
+            <Image source={resolveIcon(item.icon)} style={styles.icon} />
+            <Text style={styles.itemText}>{item.name}</Text>
+          </View>
+        )}
+      />
     </View>
-  )}
-/>
-</View>
-);
+  );
 };
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-  backgroundColor: '#0A0A0A',
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+    alignItems: 'flex-start',
+  },
+  flatlist: {
+  flex: 1, // This makes the FlatList expand to fill the available space
+  width: '100%', // Ensures the FlatList attempts to fill its parent's width
 },
-flatList: {
-},
+
   tabsContainer: {
+    height: 35,
     backgroundColor: '#1A1A1A',
   },
   tab: {
@@ -130,11 +136,13 @@ flatList: {
     fontSize: 14,
   },
   itemContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
+    width: 400,
   },
   icon: {
     width: 50,
