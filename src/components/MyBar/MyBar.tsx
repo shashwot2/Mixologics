@@ -109,9 +109,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   flatlist: {
-  flex: 1, // This makes the FlatList expand to fill the available space
-  width: '100%', // Ensures the FlatList attempts to fill its parent's width
-},
+    flex: 1, // This makes the FlatList expand to fill the available space
+    width: '100%', // Ensures the FlatList attempts to fill its parent's width
+  },
 
   tabsContainer: {
     height: 35,
