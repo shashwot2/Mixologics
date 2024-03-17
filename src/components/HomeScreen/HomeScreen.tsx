@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 const HomeScreen: React.FC = () => {
   return (
     <Tab.Navigator
-        screenOptions={({route}) => ({
+      screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
           let uri;
           if (route.name === 'MediaHome') {
@@ -46,16 +46,31 @@ const HomeScreen: React.FC = () => {
           return <Image source={uri} style={{width: size, height: size}} />;
         },
       })}>
-      <Tab.Screen name="MediaHome" component={MediaHome} options={{headerShown:false}}
-/>
-      <Tab.Screen name="MyRecipes" component={MyRecipes} options={{headerShown:false}}
-/>
-      <Tab.Screen name="AddPost" component={AddPost} options={{headerShown:false}}
-/>
-      <Tab.Screen name="MyBar" component={MyBar} options={{headerShown:false}}
-/>
-      <Tab.Screen name="Profile" component={Profile} options={{headerShown:false}}
-/>
+      <Tab.Screen
+        name="MediaHome"
+        component={MediaHome}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="MyRecipes"
+        component={MyRecipes}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="AddPost"
+        component={AddPost}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="MyBar"
+        component={MyBar}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{headerShown: false}}
+      />
     </Tab.Navigator>
   );
 };
