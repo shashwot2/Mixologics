@@ -47,6 +47,9 @@ const MyBar: React.FC = () => {
     Flavorings: [],
   };
   const activeItems = dummyData[activeCategory];
+  const addItem = category => {
+  console.log('Add item to', category);
+};
   // Function to resolve the correct image
   const resolveIcon = iconPath => {
     const iconName = iconPath.split('/').pop();
@@ -68,6 +71,7 @@ const MyBar: React.FC = () => {
         {categories.map(category => {
           const isActive = activeCategory === category;
           return (
+	  <View style={styles.tabView} key={category}>
             <TouchableOpacity
               key={category}
               onPress={() => setActiveCategory(category)}
@@ -85,6 +89,12 @@ const MyBar: React.FC = () => {
                 <Text style={styles.tabText}>{category}</Text>
               )}
             </TouchableOpacity>
+	    {isActive && (
+          <TouchableOpacity onPress={() => addItem(category)} style={styles.addButton}>
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+        )}
+	</View>
           );
         })}
       </ScrollView>
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
     height: '80%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15, // Match this to the tab's borderRadius
+    borderRadius: 15,
     paddingHorizontal: 16,
   },
   tabText: {
