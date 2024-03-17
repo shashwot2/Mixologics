@@ -20,6 +20,7 @@ const Tab = createBottomTabNavigator();
 const HomeScreen: React.FC = () => {
   return (
     <Tab.Navigator
+    
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
           let uri;
@@ -42,10 +43,13 @@ const HomeScreen: React.FC = () => {
               ? require('@assets/profile-active.png')
               : require('@assets/profile.png');
           }
-
-          return <Image source={uri} style={{width: size, height: size}} />;
+         return <Image source={uri} style={{width: size, height: size}} />;
         },
-      })}>
+	tabBarStyle: {
+      backgroundColor: '#141B25',
+      },
+      })}
+      >
       <Tab.Screen
         name="MediaHome"
         component={MediaHome}

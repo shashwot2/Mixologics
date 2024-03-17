@@ -105,19 +105,23 @@ const MyBar: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: '#050C1C',
     alignItems: 'flex-start',
+     justifyContent: 'space-between',
   },
   flatlist: {
-    flex: 1, // This makes the FlatList expand to fill the available space
-    width: '100%', // Ensures the FlatList attempts to fill its parent's width
+    flex: 1,
+    width: '100%', 
   },
 
   tabsContainer: {
-    height: 35,
-    backgroundColor: '#1A1A1A',
+    height: 115,
+    width: '100%',
+    backgroundColor: '#141B25',
+    bottom: 0, 
   },
   tab: {
+    top:60,
     height: 30,
     marginRight: 10,
     paddingHorizontal: 16,
