@@ -11,6 +11,17 @@ import {
 
 import LinearGradient from 'react-native-linear-gradient';
 const categories = ['Spirits', 'Mixers', 'Fruits', 'Herbs', 'Flavoring'];
+const MyBarHeader = ({ onAdd }) => (
+  <View style={styles.headerContainer}>
+   <View style={styles.headerTextContainer}>
+      <Text style={styles.myBarText}>My Bar</Text>
+      <Text style={styles.ingredientsText}>Ingredients</Text>
+    </View>
+    <TouchableOpacity onPress={onAdd} style={styles.addHeaderButton}>
+      <Text style={styles.addHeaderText}>+</Text>
+    </TouchableOpacity>
+  </View>
+);
 const MyBar: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('Spirits');
   const dummyData = {
@@ -101,6 +112,7 @@ const MyBar: React.FC = () => {
       <FlatList
         data={activeItems}
         keyExtractor={item => item.id}
+        ListHeaderComponent={<MyBarHeader onAdd={() => addItem(activeCategory)} />}
         contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-start'}}
         renderItem={({item}) => (
           <View style={styles.itemContainer}>
@@ -123,7 +135,28 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%', 
   },
-
+headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  headerTextContainer: {
+  flexDirection:'column',
+  },
+  myBarText: {
+    fontSize: 24,
+    color: 'white',
+  },
+  ingredientsText: {
+    fontSize: 18,
+    color: '#818B99',
+  },
+  addHeaderText: {
+  color:'#818B99',
+  fontSize:55,
+    backgroundColor: '#141B25',
+  },
   tabsContainer: {
     height: 115,
     width: '100%',
@@ -157,6 +190,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#333',
     width: 400,
+    backgroundColor:'#141B25',
   },
   icon: {
     width: 50,
