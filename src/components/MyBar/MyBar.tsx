@@ -152,14 +152,14 @@ const MyBar: React.FC = () => {
 
               <Text style={styles.modalText}>Category</Text>
               <TextInput
-              style={styles.categoryinputBox}
+              style={styles.inputBox}
       //        value={categories}
               />
               <Text style={styles.modalText}>Photo</Text>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={toggleModal}>
-                <Text style={styles.textStyle}>Close</Text>
+                <Text style={styles.textStyle}>Add</Text>
               </TouchableOpacity>
             </TouchableOpacity>
           </View>
@@ -255,6 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#050C1C',
     borderRadius: 20,
     paddingBottom: '30%',
+    paddingLeft: 15,
+    paddingRight: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -269,11 +271,8 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginTop: 10,
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
   textStyle: {
-    color: 'red',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -285,12 +284,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   inputBox: {
     backgroundColor: '#141B25', 
     color: 'white', 
     borderRadius: 10,
+    height:15,
     fontSize: 18,
     padding: 15,
     marginBottom: 20,
