@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   View,
+  TextInput,
   TouchableOpacity,
   Text,
   FlatList,
@@ -144,7 +145,16 @@ const MyBar: React.FC = () => {
               activeOpacity={1}
               onPress={e => e.stopPropagation()}>
               <Text style={styles.modalText}>Name</Text>
+              <TextInput
+              style={styles.inputBox}
+             // value={name}
+              />
+
               <Text style={styles.modalText}>Category</Text>
+              <TextInput
+              style={styles.categoryinputBox}
+      //        value={categories}
+              />
               <Text style={styles.modalText}>Photo</Text>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
@@ -244,7 +254,7 @@ const styles = StyleSheet.create({
     height: '50%',
     backgroundColor: '#050C1C',
     borderRadius: 20,
-    padding: '40%',
+    paddingBottom: '30%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -268,15 +278,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    marginBottom: 15,
     color:'white',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   fullScreenCentered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  },
+  inputBox: {
+    backgroundColor: '#141B25', 
+    color: 'white', 
+    borderRadius: 10,
+    fontSize: 18,
+    padding: 15,
+    marginBottom: 20,
   },
 
 });
