@@ -20,37 +20,59 @@ const Tab = createBottomTabNavigator();
 const HomeScreen: React.FC = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size}) => {
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           let uri;
           if (route.name === 'MediaHome') {
-              uri = focused
-                ? require('@assets/mediahome-active.png')
-                : require('@assets/mediahome.png');
-            } else if (route.name === 'MyRecipes') {
-              uri = focused
-                ? require('@assets/myrecipes-active.png')
-                : require('@assets/myrecipes.png');
-            } else if (route.name === 'AddPost') {
-              	uri = require('@assets/addpost.png');
-            } else if (route.name === 'MyBar') {
-              uri = focused
-                ? require('@assets/mybar-active.png')
-                : require('@assets/mybar.png');
-            } else if (route.name === 'Profile') {
-              uri = focused
-                ? require('@assets/profile-active.png')
-                : require('@assets/profile.png');
-            }
-
+            uri = focused
+              ? require('@assets/mediahome-active.png')
+              : require('@assets/mediahome.png');
+          } else if (route.name === 'MyRecipes') {
+            uri = focused
+              ? require('@assets/myrecipes-active.png')
+              : require('@assets/myrecipes.png');
+          } else if (route.name === 'AddPost') {
+            uri = require('@assets/addpost.png');
+          } else if (route.name === 'MyBar') {
+            uri = focused
+              ? require('@assets/mybar-active.png')
+              : require('@assets/mybar.png');
+          } else if (route.name === 'Profile') {
+            uri = focused
+              ? require('@assets/profile-active.png')
+              : require('@assets/profile.png');
+          }
           return <Image source={uri} style={{width: size, height: size}} />;
         },
+        tabBarStyle: {
+          backgroundColor: '#141B25',
+        },
       })}>
-      <Tab.Screen name="MediaHome" component={MediaHome} />
-      <Tab.Screen name="MyRecipes" component={MyRecipes} />
-      <Tab.Screen name="AddPost" component={AddPost} />
-      <Tab.Screen name="MyBar" component={MyBar} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="MediaHome"
+        component={MediaHome}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="MyRecipes"
+        component={MyRecipes}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="AddPost"
+        component={AddPost}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="MyBar"
+        component={MyBar}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{headerShown: false}}
+      />
     </Tab.Navigator>
   );
 };
