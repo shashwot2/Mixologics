@@ -18,11 +18,11 @@ const App: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* {user ? ( */}
+        {user ? (
           <Stack.Screen name="Home" component={HomeScreen} />
-        {/* ) : ( */}
-          {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
-        {/* )} */}
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
