@@ -7,7 +7,7 @@ const LoginScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Welcome to the App!</Text>
+        <Text style={styles.title}>Welcome to Mixologics!</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
 
         <GoogleSigninButton
