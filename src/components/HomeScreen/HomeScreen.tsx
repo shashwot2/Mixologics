@@ -31,7 +31,9 @@ function MyRecipesStack() {
       <RecipesStack.Screen
         name="RecipeDetails"
         component={RecipeDetailScreen}
-        options={{ headerShown: false}}
+        options={{
+          headerShown: false,
+        }}
       />
     </RecipesStack.Navigator>
   );
