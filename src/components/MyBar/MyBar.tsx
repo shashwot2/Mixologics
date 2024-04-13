@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import { BottomTabView } from '@react-navigation/bottom-tabs';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -13,7 +14,7 @@ import {
 
 import LinearGradient from 'react-native-linear-gradient';
 const categories = ['Spirits', 'Mixers', 'Fruits', 'Herbs', 'Flavoring'];
-const MyBarHeader = ({onAdd}) => (
+const MyBarHeader = ({ onAdd }) => (
   <View style={styles.headerContainer}>
     <View style={styles.headerTextContainer}>
       <Text style={styles.myBarText}>My Bar</Text>
@@ -56,9 +57,29 @@ const MyBar: React.FC = () => {
         icon: '@assets/mybaricons/coke.png',
       },
     ],
-    Fruits: [],
-    Herbs: [],
-    Flavorings: [],
+    Fruits: [{
+        id: '001',
+        name: 'Coke',
+        category: 'soda',
+        icon: '@assets/mybaricons/coke.png',
+      },
+    ],
+    Herbs: [
+{
+        id: '001',
+        name: 'Coke',
+        category: 'soda',
+        icon: '@assets/mybaricons/coke.png',
+      },
+    ],
+    Flavorings: [
+{
+        id: '001',
+        name: 'Coke',
+        category: 'soda',
+        icon: '@assets/mybaricons/coke.png',
+      },
+    ],
   };
   const activeItems = dummyData[activeCategory];
   const addItem = category => {
@@ -105,13 +126,6 @@ const MyBar: React.FC = () => {
                   <Text style={styles.tabText}>{category}</Text>
                 )}
               </TouchableOpacity>
-              {isActive && (
-                <TouchableOpacity
-                  onPress={() => addItem(category)}
-                  style={styles.addButton}>
-                  <Text style={styles.addButtonText}>+</Text>
-                </TouchableOpacity>
-              )}
             </View>
           );
         })}
@@ -122,8 +136,8 @@ const MyBar: React.FC = () => {
         ListHeaderComponent={
           <MyBarHeader onAdd={() => addItem(activeCategory)} />
         }
-        contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-start'}}
-        renderItem={({item}) => (
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}
+        renderItem={({ item }) => (
           <View style={styles.itemContainer}>
             <Image source={resolveIcon(item.icon)} style={styles.icon} />
             <Text style={styles.itemText}>{item.name}</Text>
@@ -146,14 +160,14 @@ const MyBar: React.FC = () => {
               onPress={e => e.stopPropagation()}>
               <Text style={styles.modalText}>Name</Text>
               <TextInput
-              style={styles.inputBox}
-             // value={name}
+                style={styles.inputBox}
+              // value={name}
               />
 
               <Text style={styles.modalText}>Category</Text>
               <TextInput
-              style={styles.inputBox}
-      //        value={categories}
+                style={styles.inputBox}
+              //        value={categories}
               />
               <Text style={styles.modalText}>Photo</Text>
               <TouchableOpacity
@@ -198,13 +212,13 @@ const styles = StyleSheet.create({
   },
   addHeaderText: {
     color: '#818B99',
-    fontSize: 55,
-    backgroundColor: '#141B25',
+    fontSize: 30,
   },
   tabsContainer: {
     height: 115,
     width: '100%',
     backgroundColor: '#141B25',
+    flexDirection: 'row',
     bottom: 0,
   },
   tab: {
@@ -214,6 +228,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addHeaderButton:{
+    backgroundColor: '#141B25',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:40,
+    width:40,
+    height:40,
+  },
+  tabView:{
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 50,
   },
   gradient: {
     height: '80%',
@@ -246,7 +274,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   modalView: {
-   flex: 1,
+    flex: 1,
     justifyContent: 'flex-end',
     position: 'absolute',
     bottom: 0,
@@ -277,7 +305,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    color:'white',
+    color: 'white',
     textAlign: 'left',
   },
   fullScreenCentered: {
@@ -287,10 +315,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   inputBox: {
-    backgroundColor: '#141B25', 
-    color: 'white', 
+    backgroundColor: '#141B25',
+    color: 'white',
     borderRadius: 10,
-    height:15,
+    height: 15,
     fontSize: 18,
     padding: 15,
     marginBottom: 20,
