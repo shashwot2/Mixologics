@@ -5,7 +5,7 @@ import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } 
 const ItemSeparator = () => (
   <View style={{ height: 20 }} /> 
 );
-const MyRecipes: React.FC = () => {
+const MyRecipes: React.FC = ({navigation}) => {
   const [recipes, setRecipes] = useState([
     {
       id: '1',
@@ -65,6 +65,7 @@ const MyRecipes: React.FC = () => {
     },
   ]);
   const renderRecipe = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipe: item })}>
     <View style={styles.recipeContainer}>
       <Image style={styles.recipeCoverImg} source={item.image} />
       <View style={styles.cocktailDetails}>
@@ -73,6 +74,7 @@ const MyRecipes: React.FC = () => {
         <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
       </View>
     </View>
+  </TouchableOpacity>
   );
 
   const [selectedCategory, setSelectedCategory] = useState('Classic');

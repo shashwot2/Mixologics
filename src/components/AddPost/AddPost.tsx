@@ -175,7 +175,6 @@ const styles = {
   },
   posticons: {
     width: 30,
-    length: 30,
   },
   tabItem: {
     flexDirection: 'row',
