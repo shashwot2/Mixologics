@@ -16,6 +16,7 @@ import AddPost from '@components/AddPost/AddPost';
 import Profile from '@components/Profile/Profile';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecipeDetailScreen from '@components/MyRecipes/RecipeDetailScreen';
+import AddNewRecipe from '@components/MyRecipes/AddNewRecipe';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
@@ -35,13 +36,18 @@ function MyRecipesStack() {
           headerShown: false,
         }}
       />
+      <RecipesStack.Screen
+        name="AddNewRecipe"
+        component={AddNewRecipe}
+        options={{ headerShown: false }}
+      />
     </RecipesStack.Navigator>
   );
 }
 function getTabBarVisibility(route: any) {
   const routeName = getFocusedRouteNameFromRoute(route) ?? route.name;
 
-  const hideOnScreens = ['RecipeDetails', 'AddPost'];
+  const hideOnScreens = ['RecipeDetails', 'AddPost', 'AddNewRecipe'];
   return hideOnScreens.includes(routeName) ? 'none' : 'flex';
 }
 

@@ -33,7 +33,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
         }
       ],
       category: 'Classic',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
@@ -43,7 +43,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 4,
       steps: [],
       category: 'Classic',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
     },
     {
@@ -53,7 +53,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 2,
       steps: [],
       category: 'Classic',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bloodymary.png')
     },
     {
@@ -63,7 +63,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 2,
       steps: [],
       category: 'Classic',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
@@ -73,7 +73,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 2,
       steps: [],
       category: 'Created',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
     },
     {
@@ -83,7 +83,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 2,
       steps: [],
       category: 'Created',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
@@ -93,7 +93,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       servings: 2,
       steps: [],
       category: 'Saved',
-      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
+      ingredients: ["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
   ]);
@@ -107,6 +107,12 @@ const MyRecipes: React.FC = ({ navigation }) => {
           <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
         </View>
       </View>
+    </TouchableOpacity>
+  );
+
+  const AddNewRecipeButton = ({ onPress }) => (
+    <TouchableOpacity style={styles.addNewRecipeButton} onPress={onPress}>
+      <Text style={styles.addNewRecipeText}>+</Text>
     </TouchableOpacity>
   );
 
@@ -147,12 +153,26 @@ const MyRecipes: React.FC = ({ navigation }) => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.recipesContainer}
         ItemSeparatorComponent={ItemSeparator}
+        ListFooterComponent={selectedCategory === 'Created' ? () => <AddNewRecipeButton onPress={() => navigation.navigate('AddNewRecipe')} /> : null}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  addNewRecipeButton: {
+    height: 196,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#141B25',
+    marginVertical: 10,
+    marginTop: 20,
+  },
+  addNewRecipeText: {
+    fontSize: 72,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: '#050C1C',
@@ -200,7 +220,6 @@ const styles = StyleSheet.create({
   recipeContainer: {
     overflow: 'hidden',
     height: 196,
-    borderRadius: 8,
   },
   recipeCoverImg: {
     width: '100%',
