@@ -188,8 +188,7 @@ const styles = {
   
   sectionTitle: {
     color: '#FFFFFF',
-    fontSize: 18,
-    paddingVertical: 10,
+    fontSize: 12,
   },
 
   recipeCard: {
