@@ -3,16 +3,18 @@ import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } 
 
 
 const ItemSeparator = () => (
-  <View style={{ height: 20 }} /> 
+  <View style={{ height: 20 }} />
 );
-const MyRecipes: React.FC = ({navigation}) => {
+const MyRecipes: React.FC = ({ navigation }) => {
   const [recipes, setRecipes] = useState([
     {
       id: '1',
       name: 'Manhattan',
       base: 'Rye',
       servings: 2,
+      steps: 2,
       category: 'Classic',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan.png')
     },
     {
@@ -20,7 +22,9 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Bellini',
       base: 'Prosecco',
       servings: 4,
+      steps: 2,
       category: 'Classic',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
     },
     {
@@ -28,7 +32,9 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Bloody Mary',
       base: 'Vermouth',
       servings: 2,
+      steps: 2,
       category: 'Classic',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bloodymary.png')
     },
     {
@@ -36,7 +42,9 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
+      steps: 2,
       category: 'Classic',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan.png')
     },
     {
@@ -44,7 +52,9 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Bellini',
       base: 'Vermouth',
       servings: 2,
+      steps: 2,
       category: 'Created',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
     },
     {
@@ -52,7 +62,9 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
+      steps: 2,
       category: 'Created',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan.png')
     },
     {
@@ -60,21 +72,23 @@ const MyRecipes: React.FC = ({navigation}) => {
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
+      steps: 2,
       category: 'Saved',
+      ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/manhattan.png')
     },
   ]);
   const renderRecipe = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipe: item })}>
-    <View style={styles.recipeContainer}>
-      <Image style={styles.recipeCoverImg} source={item.image} />
-      <View style={styles.cocktailDetails}>
-        <Text style={styles.cocktailName}>{item.name}</Text>
-        <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
-        <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
+      <View style={styles.recipeContainer}>
+        <Image style={styles.recipeCoverImg} source={item.image} />
+        <View style={styles.cocktailDetails}>
+          <Text style={styles.cocktailName}>{item.name}</Text>
+          <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
+          <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
+        </View>
       </View>
-    </View>
-  </TouchableOpacity>
+    </TouchableOpacity>
   );
 
   const [selectedCategory, setSelectedCategory] = useState('Classic');
@@ -83,7 +97,7 @@ const MyRecipes: React.FC = ({navigation}) => {
     return (
       (recipe.category === selectedCategory) &&
       (recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       recipe.base.toLowerCase().includes(searchQuery.toLowerCase()))
+        recipe.base.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
   return (
