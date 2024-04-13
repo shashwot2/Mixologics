@@ -41,11 +41,11 @@ const MyRecipes: React.FC = () => {
     },
     {
       id: '5',
-      name: 'Manhattan',
+      name: 'Bellini',
       base: 'Vermouth',
       servings: 2,
-      category: 'Classic',
-      image: require('@assets/recipes/manhattan.png')
+      category: 'Created',
+      image: require('@assets/recipes/bellini.png')
     },
     {
       id: '6',
@@ -76,8 +76,14 @@ const MyRecipes: React.FC = () => {
   );
 
   const [selectedCategory, setSelectedCategory] = useState('Classic');
-  const filteredRecipes = recipes.filter(recipe => recipe.category === selectedCategory);
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredRecipes = recipes.filter(recipe => {
+    return (
+      (recipe.category === selectedCategory) &&
+      (recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       recipe.base.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -96,6 +102,8 @@ const MyRecipes: React.FC = () => {
           style={styles.searchbar}
           placeholder="Search"
           placeholderTextColor="#818B99"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
       <FlatList
