@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 const AddNewRecipe = ({ navigation }) => {
     const [recipeName, setRecipeName] = useState('');
     const [servingSize, setServingSize] = useState('');
     const [mainBase, setMainBase] = useState('');
     const [ingredients, setIngredients] = useState(['']);
-    const [instructions, setInstructions] = useState(['']);
+    const [instructions, setInstructions] = useState([{ text: '', imageUrl: null }]);
+    const [instructionImages, setInstructionImages] = useState({});
 
     const addIngredient = () => {
         setIngredients([...ingredients, '']);
     };
 
     const addInstruction = () => {
-        setInstructions([...instructions, '']);
+        setInstructions([...instructions, { text: '', imageUrl: null }]);
     };
 
-
+    const handleImageUpload = async (index) => {
+        // Use an image picker library to get the image
+        // For example, using expo-image-picker:
+        // const result = await ImagePicker.launchImageLibraryAsync();
+        // if (!result.cancelled) {
+        //   const newInstructions = [...instructions];
+        //   newInstructions[index].imageUrl = result.uri;
+        //   setInstructions(newInstructions);
+        // }
+    };
     return (
         <ScrollView style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -64,7 +73,6 @@ const AddNewRecipe = ({ navigation }) => {
                                     newIngredients[index] = text;
                                     setIngredients(newIngredients);
                                 }}
-                                placeholder="Ingredient"
                             />
                             {ingredients.length > 1 && (
                                 <TouchableOpacity
@@ -86,34 +94,49 @@ const AddNewRecipe = ({ navigation }) => {
                 <View style={styles.section}>
                     <Text style={styles.label}>Instructions</Text>
                     {instructions.map((instruction, index) => (
-                        <View style={styles.instructionContainer} key={`instruction-${index}`}>
-                            <TextInput
-                                style={styles.input}
-                                value={instruction}
-                                onChangeText={text => {
-                                    const newInstructions = [...instructions];
-                                    newInstructions[index] = text;
-                                    setInstructions(newInstructions);
-                                }}
-                                placeholder={`Step ${index + 1}`}
-                            />
-                            {instructions.length > 1 && (
-                                <TouchableOpacity
-                                    style={styles.removeButton}
-                                    onPress={() => {
-                                        const newInstructions = instructions.filter((_, i) => i !== index);
+                        <View>
+                        <Text key={index} style={styles.stepIndex}>Step {index + 1}</Text>
+                        <View key={`instruction-${index}`} style={styles.stepContainer}>
+                            <View style={styles.textInputWithRemoveContainer}>
+                                <TextInput
+                                    style={styles.input}
+                                    value={instruction.text}
+                                    onChangeText={text => {
+                                        const newInstructions = [...instructions];
+                                        newInstructions[index].text = text;
                                         setInstructions(newInstructions);
                                     }}
-                                >
-                                    <Icon name="close" style={styles.removeIcon} />
-                                </TouchableOpacity>
+                                />
+                                {instructions.length > 1 && (
+                                    <TouchableOpacity
+                                        style={styles.removeButton}
+                                        onPress={() => {
+                                            const newInstructions = instructions.filter((_, i) => i !== index);
+                                            setInstructions(newInstructions);
+                                        }}
+                                    >
+                                        <Icon name="close-circle" size={24} color="white" />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                            {index === instructions.length - 1 && (
+                                <View style={styles.uploadImageContainer}>
+                                    <TouchableOpacity style={styles.uploadButton} onPress={() => handleImageUpload(index)}>
+                                        <Text style={styles.buttonTextPlus}>+</Text>
+                                    </TouchableOpacity>
+                                    {instruction.imageUrl && (
+                                        <Image
+                                            source={{ uri: instruction.imageUrl }}
+                                            style={styles.uploadedImage}
+                                        />
+                                    )}
+                                </View>
                             )}
                         </View>
-                    ))}
-                    <TouchableOpacity style={styles.button} onPress={addInstruction}>
-                        <View style={styles.plusButton}>
-                            <Text style={styles.plusText}>+</Text>
                         </View>
+                    ))}
+                    <TouchableOpacity style={styles.addButton} onPress={addInstruction}>
+                        <Text style={styles.buttonText}>Add Step</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.section}>
@@ -123,12 +146,53 @@ const AddNewRecipe = ({ navigation }) => {
                 <TouchableOpacity style={styles.saveButton}>
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
-            </View>
-        </ScrollView>
+                </View>
+        </ScrollView >
     );
 };
 
 const styles = StyleSheet.create({
+    stepContainer: {
+        marginBottom: 20,
+      },
+      textInputWithRemoveContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+      uploadImageContainer: {
+        alignItems: 'center',
+        marginTop: 10,
+      },
+      uploadButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#141B25',
+        padding: 10,
+        height:80,
+        width:250,
+        borderRadius: 5,
+        marginRight:25,
+        justifyContent: 'center',
+      },
+      addButton: {
+        backgroundColor: '#141B25',
+        borderRadius: 5,
+        alignItems: 'center',
+        marginLeft:60,
+        width:170,
+      },
+      uploadedImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 5,
+        marginTop: 10,
+      },
+    stepIndex: {
+        color: '#FFFFFF',
+        marginBottom: 5,
+
+    },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -186,7 +250,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-      },
+    },
     instructionContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -217,6 +281,10 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 18,
     },
+    buttonTextPlus: {
+        color: "#FFFFFF",
+        fontSize: 30,
+    },
     plusButton: {
         alignItems: 'center',
         padding: 10,
@@ -230,7 +298,7 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
     },
     saveButton: {
-        backgroundColor: 'blue',
+        backgroundColor: '#141B25',
         padding: 20,
         borderRadius: 5,
     },
