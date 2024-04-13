@@ -7,10 +7,15 @@ import photo from '@assets/photo.png'
 import myrecipes from '@assets/myrecipes-active.png'
 import profile from '@assets/profile.png'
 
-const RecipeCard = ({ title, image }) => (
+const RecipeCard = ({ title, image, onDelete }) => (
   <View style={styles.recipeCardContainer}>
     <Image source={image} style={styles.recipeImage} />
     <Text style={styles.recipeTitle}>{title}</Text>
+    {onDelete && (
+      <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
+        <Text style={styles.deleteButtonText}>X</Text>
+      </TouchableOpacity>
+    )}
   </View>
 );
 
@@ -41,6 +46,9 @@ const AddPost: React.FC = () => {
     }
   };
 
+  const handleDeleteRecipe = (recipeId) => {
+    setSelectedRecipes(selectedRecipes.filter((recipe) => recipe.id !== recipeId));
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -81,7 +89,12 @@ const AddPost: React.FC = () => {
         <Text style={styles.sectionTitle}>Selected Recipes</Text>
       <ScrollView horizontal style={{ flexDirection: 'row' }}>
         {selectedRecipes.map((recipe) => (
-          <RecipeCard key={recipe.id} title={recipe.title} image={recipe.image} />
+          <RecipeCard
+            key={recipe.id}
+            title={recipe.title}
+            image={recipe.image}
+            onDelete={() => handleDeleteRecipe(recipe.id)} // Pass the delete function
+          />
         ))}
       </ScrollView>
       <Text style={styles.yourCreations}>Your Creations</Text>
@@ -117,6 +130,7 @@ const styles = {
     backgroundColor: "#050C1C"
   },
   recipeCardContainer: {
+    position:'relative',
     margin: 10,
   },
   inputAreaText: {
@@ -180,6 +194,23 @@ const styles = {
 
   recipeCard: {
     marginRight: 10,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 0, 
+    right: 0,
+    backgroundColor: 'white',
+    borderRadius: 7.5, 
+    width: 15,
+    height: 15, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  deleteButtonText: {
+    color: 'black',
+    fontSize: 8,
+    fontWeight: 'bold', 
   },
 };
 
