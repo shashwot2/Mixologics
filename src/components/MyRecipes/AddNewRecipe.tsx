@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { launchImageLibrary } from 'react-native-image-picker';
 const AddNewRecipe = ({ navigation }) => {
     const [recipeName, setRecipeName] = useState('');
     const [servingSize, setServingSize] = useState('');
@@ -17,16 +18,29 @@ const AddNewRecipe = ({ navigation }) => {
         setInstructions([...instructions, { text: '', imageUrl: null }]);
     };
 
-    const handleImageUpload = async (index) => {
-        // Use an image picker library to get the image
-        // For example, using expo-image-picker:
-        // const result = await ImagePicker.launchImageLibraryAsync();
-        // if (!result.cancelled) {
-        //   const newInstructions = [...instructions];
-        //   newInstructions[index].imageUrl = result.uri;
-        //   setInstructions(newInstructions);
-        // }
+    const handleImageUpload = (index) => {
+        const options = {
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                const source = { uri: response.assets[0].uri };
+                const newInstructions = [...instructions];
+                newInstructions[index].imageUrl = source.uri;
+                setInstructions(newInstructions);
+            }
+        });
     };
+
     return (
         <ScrollView style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -94,46 +108,44 @@ const AddNewRecipe = ({ navigation }) => {
                 <View style={styles.section}>
                     <Text style={styles.label}>Instructions</Text>
                     {instructions.map((instruction, index) => (
-                        <View>
-                        <Text key={index} style={styles.stepIndex}>Step {index + 1}</Text>
-                        <View key={`instruction-${index}`} style={styles.stepContainer}>
-                            <View style={styles.textInputWithRemoveContainer}>
-                                <TextInput
-                                    style={styles.input}
-                                    value={instruction.text}
-                                    onChangeText={text => {
-                                        const newInstructions = [...instructions];
-                                        newInstructions[index].text = text;
-                                        setInstructions(newInstructions);
-                                    }}
-                                />
-                                {instructions.length > 1 && (
-                                    <TouchableOpacity
-                                        style={styles.removeButton}
-                                        onPress={() => {
-                                            const newInstructions = instructions.filter((_, i) => i !== index);
+                        <View key={`instruction-container-${index}`} style={styles.stepContainer}>
+                                <Text key={`step-text-${index}`} style={styles.stepIndex}>Step {index + 1}</Text>
+                                <View key={`instruction-${index}`} style={styles.textInputWithRemoveContainer}>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={instruction.text}
+                                        onChangeText={text => {
+                                            const newInstructions = [...instructions];
+                                            newInstructions[index].text = text;
                                             setInstructions(newInstructions);
                                         }}
-                                    >
-                                        <Icon name="close-circle" size={24} color="white" />
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            {index === instructions.length - 1 && (
-                                <View style={styles.uploadImageContainer}>
-                                    <TouchableOpacity style={styles.uploadButton} onPress={() => handleImageUpload(index)}>
-                                        <Text style={styles.buttonTextPlus}>+</Text>
-                                    </TouchableOpacity>
-                                    {instruction.imageUrl && (
-                                        <Image
-                                            source={{ uri: instruction.imageUrl }}
-                                            style={styles.uploadedImage}
-                                        />
+                                    />
+                                    {instructions.length > 1 && (
+                                        <TouchableOpacity
+                                            style={styles.removeButton}
+                                            onPress={() => {
+                                                const newInstructions = instructions.filter((_, i) => i !== index);
+                                                setInstructions(newInstructions);
+                                            }}
+                                        >
+                                            <Icon name="close-circle" size={24} color="white" />
+                                        </TouchableOpacity>
                                     )}
                                 </View>
-                            )}
-                        </View>
-                        </View>
+                                {index === instructions.length - 1 && (
+                                    <View style={styles.uploadImageContainer}>
+                                        <TouchableOpacity style={styles.uploadButton} onPress={() => handleImageUpload(index)}>
+                                            <Text style={styles.buttonTextPlus}>+</Text>
+                                        </TouchableOpacity>
+                                        {instruction.imageUrl && (
+                                            <Image
+                                                source={{ uri: instruction.imageUrl }}
+                                                style={styles.uploadedImage}
+                                            />
+                                        )}
+                                    </View>
+                                )}
+                            </View>
                     ))}
                     <TouchableOpacity style={styles.addButton} onPress={addInstruction}>
                         <Text style={styles.buttonText}>Add Step</Text>
@@ -146,7 +158,7 @@ const AddNewRecipe = ({ navigation }) => {
                 <TouchableOpacity style={styles.saveButton}>
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
-                </View>
+            </View>
         </ScrollView >
     );
 };
@@ -154,40 +166,40 @@ const AddNewRecipe = ({ navigation }) => {
 const styles = StyleSheet.create({
     stepContainer: {
         marginBottom: 20,
-      },
-      textInputWithRemoveContainer: {
+    },
+    textInputWithRemoveContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-      },
-      uploadImageContainer: {
+    },
+    uploadImageContainer: {
         alignItems: 'center',
         marginTop: 10,
-      },
-      uploadButton: {
+    },
+    uploadButton: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#141B25',
         padding: 10,
-        height:80,
-        width:250,
+        height: 80,
+        width: 250,
         borderRadius: 5,
-        marginRight:25,
+        marginRight: 25,
         justifyContent: 'center',
-      },
-      addButton: {
+    },
+    addButton: {
         backgroundColor: '#141B25',
         borderRadius: 5,
         alignItems: 'center',
-        marginLeft:60,
-        width:170,
-      },
-      uploadedImage: {
+        marginLeft: 60,
+        width: 170,
+    },
+    uploadedImage: {
         width: 100,
         height: 100,
         borderRadius: 5,
         marginTop: 10,
-      },
+    },
     stepIndex: {
         color: '#FFFFFF',
         marginBottom: 5,
