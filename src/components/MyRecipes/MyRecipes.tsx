@@ -1,28 +1,146 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 
 const MyRecipes: React.FC = () => {
-  return (
-    <View style={styles.recipesContainer}>
-      <View style={styles.screenSection}>
-        <View style={styles.recipeContainer}>
-          <Image style={styles.recipeCoverImg} source={require('@assets/manhattan.png')}/>
-          <View style={styles.cocktailDetails}>
-            <Text style={styles.cocktailName}>Manhattan</Text>
-            <Text style={styles.cocktailBase}>Main Base: Vermouth</Text>
-            <Text style={styles.cocktailServings}>Servings: 2</Text>
-          </View>
-        </View>
+  const [recipes, setRecipes] = useState([
+    {
+      id: '1',
+      name: 'Manhattan',
+      base: 'Rye',
+      servings: 2,
+      category: 'Classic',
+      image: require('@assets/recipes/manhattan.png')
+    },
+    {
+      id: '2',
+      name: 'Bellini',
+      base: 'Prosecco',
+      servings: 4,
+      category: 'Classic',
+      image: require('@assets/recipes/bellini.png')
+    },
+    {
+      id: '3',
+      name: 'Bloody Mary',
+      base: 'Vermouth',
+      servings: 2,
+      category: 'Classic',
+      image: require('@assets/recipes/bloodymary.png')
+    },
+    {
+      id: '4',
+      name: 'Manhattan',
+      base: 'Vermouth',
+      servings: 2,
+      category: 'Classic',
+      image: require('@assets/recipes/manhattan.png')
+    }, 
+    {
+      id: '5',
+      name: 'Manhattan',
+      base: 'Vermouth',
+      servings: 2,
+      category: 'Classic',
+      image: require('@assets/recipes/manhattan.png')
+    },
+    {
+      id: '6',
+      name: 'Manhattan',
+      base: 'Vermouth',
+      servings: 2,
+      category: 'Created',
+      image: require('@assets/recipes/manhattan.png')
+    },
+    {
+      id: '7',
+      name: 'Manhattan',
+      base: 'Vermouth',
+      servings: 2,
+      category: 'Saved',
+      image: require('@assets/recipes/manhattan.png')
+    },
+  ]);
+  const renderRecipe = ({ item }) => (
+    <View style={styles.recipeContainer}>
+      <Image style={styles.recipeCoverImg} source={item.image} />
+      <View style={styles.cocktailDetails}>
+        <Text style={styles.cocktailName}>{item.name}</Text>
+        <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
+        <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
       </View>
+    </View>
+  );
+
+  const [selectedCategory, setSelectedCategory] = useState('Classic');
+  const filteredRecipes = recipes.filter(recipe => recipe.category === selectedCategory);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.filterbuttons}>
+          <TouchableOpacity onPress={() => setSelectedCategory('Classic')}>
+            <Text style={[styles.headerText, selectedCategory === 'Classic' && styles.activeHeaderText]}>Classic</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setSelectedCategory('Saved')}>
+            <Text style={[styles.headerText, selectedCategory === 'Saved' && styles.activeHeaderText]}>Saved</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setSelectedCategory('Created')}>
+            <Text style={[styles.headerText, selectedCategory === 'Created' && styles.activeHeaderText]}>Created</Text>
+          </TouchableOpacity>
+        </View>
+        <TextInput
+          style={styles.searchbar}
+          placeholder="Search"
+          placeholderTextColor="#818B99"
+        />
+      </View>
+      <FlatList
+        data={filteredRecipes}
+        renderItem={renderRecipe}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.recipesContainer}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#050C1C',
+  },
+  activeHeaderText: {
+    color: '#FFD700',
+  },
+
+  header: {
+    backgroundColor: '#141B25',
+    width: '100%',
+    paddingVertical: 5,
+  },
+  filterbuttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerText: {
+    paddingTop: 65,
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: 'white'
+  },
+  searchbar: {
+    backgroundColor: "#242934",
+    margin: 20,
+    height: 40,
+    paddingLeft: 10,
+    color: '#818B99',
+  },
   recipesContainer: {
-    height: '100%',
-    backgroundColor: '#050C1C'
+    flexGrow: 1,
+    backgroundColor: '#050C1C',
+    padding: 10,
+    paddingVertical: 20,
   },
   screenSection: {
     padding: 24,
