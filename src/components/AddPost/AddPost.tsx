@@ -6,9 +6,10 @@ import vodka from '@assets/mybaricons/vodka.png'
 import photo from '@assets/photo.png'
 import myrecipes from '@assets/myrecipes-active.png'
 import profile from '@assets/profile.png'
+
 const RecipeCard = ({ title, image }) => (
   <View style={styles.recipeCardContainer}>
-    <Image source={ image } style={styles.recipeImage} />
+    <Image source={image} style={styles.recipeImage} />
     <Text style={styles.recipeTitle}>{title}</Text>
   </View>
 );
@@ -16,7 +17,7 @@ const RecipeCard = ({ title, image }) => (
 const AddPost: React.FC = () => {
   const [creations, setCreations] = useState([
     { id: '1', title: 'Bloody Mary', image: whisky },
-    { id: '2', title: 'Vodka', image: vodka}
+    { id: '2', title: 'Vodka', image: vodka }
   ]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -27,6 +28,19 @@ const AddPost: React.FC = () => {
   const handleSearch = (text) => {
     setSearchQuery(text);
   };
+  const [selectedRecipes, setSelectedRecipes] = useState([]);
+
+
+  const handleSelectRecipe = (recipe) => {
+    const isRecipeSelected = selectedRecipes.some((selected) => selected.id === recipe.id);
+
+    if (isRecipeSelected) {
+      setSelectedRecipes(selectedRecipes.filter((selected) => selected.id !== recipe.id));
+    } else {
+      setSelectedRecipes([...selectedRecipes, recipe]);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -43,33 +57,48 @@ const AddPost: React.FC = () => {
       </View>
       <View style={styles.smallRecipes}>
         <View style={styles.tabBar}>
-          <TouchableOpacity>
-            <Image source={photo} />
-            <Text style={{color:'white'}}>Photo</Text>
+          <TouchableOpacity style={styles.tabItem}>
+            <Image source={photo} style={styles.posticons} />
+            <Text style={{ color: 'white', paddingLeft: 5 }}>Photo</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={myrecipes} style={{width:30,length:30}}/>
-            <Text style={{color:'white'}}>Recipe</Text>
+          <TouchableOpacity style={styles.tabItem}>
+            <Image source={myrecipes} style={styles.posticons} />
+            <Text style={{ color: 'white', paddingLeft: 5 }}>Recipe</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-          <Image source={profile} style={{width:30,length:30}}/>
-            <Text style={{color:'white'}}>Tag</Text>
+          <TouchableOpacity style={styles.tabItem}>
+            <Image source={profile} style={styles.posticons} />
+            <Text style={{ color: 'white', paddingLeft: 5 }}>Tag</Text>
           </TouchableOpacity>
         </View>
 
         <TextInput
-        style={styles.searchbar}
-        placeholder="Search the recipe here..."
-        placeholderTextColor="#818B99"
-        value={searchQuery}
-        onChangeText={handleSearch} 
-      />
-        <ScrollView horizontal>
-        </ScrollView>
-        <Text style={styles.yourCreations}>Your Creations</Text>
-        <ScrollView horizontal style={{ flexDirection: 'row' }}>
+          style={styles.searchbar}
+          placeholder="Search the recipe here..."
+          placeholderTextColor="#818B99"
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+        <Text style={styles.sectionTitle}>Selected Recipes</Text>
+      <ScrollView horizontal style={{ flexDirection: 'row' }}>
+        {selectedRecipes.map((recipe) => (
+          <RecipeCard key={recipe.id} title={recipe.title} image={recipe.image} />
+        ))}
+      </ScrollView>
+      <Text style={styles.yourCreations}>Your Creations</Text>
+      <ScrollView horizontal style={{ flexDirection: 'row' }}>
         {filteredCreations.map((creation) => (
-          <RecipeCard key={creation.id} title={creation.title} image={creation.image} />
+          <TouchableOpacity
+            key={creation.id}
+            onPress={() => handleSelectRecipe(creation)}
+            style={[
+              styles.recipeCard,
+              selectedRecipes.some((selected) => selected.id === creation.id)
+                ? styles.selectedRecipeCard
+                : null,
+            ]}
+          >
+            <RecipeCard title={creation.title} image={creation.image} />
+          </TouchableOpacity>
         ))}
       </ScrollView>
       </View>
@@ -84,7 +113,7 @@ const styles = {
   },
   inputArea: {
     padding: 10,
-    height: '45%',
+    height: '30%',
     backgroundColor: "#050C1C"
   },
   recipeCardContainer: {
@@ -127,9 +156,31 @@ const styles = {
     padding: 10,
 
   },
-  yourCreations:{
+  yourCreations: {
     color: "#818B99",
-  }
+  },
+  posticons: {
+    width: 30,
+    length: 30,
+  },
+  tabItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectedRecipeCard: {
+    borderColor: 'white',
+    borderWidth: 0.5,
+  },
+  
+  sectionTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    paddingVertical: 10,
+  },
+
+  recipeCard: {
+    marginRight: 10,
+  },
 };
 
 export default AddPost;
