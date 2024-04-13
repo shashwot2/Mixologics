@@ -33,57 +33,82 @@ const AddNewRecipe = ({ navigation }) => {
                         onChangeText={setRecipeName}
                     />
                 </View>
+                <View style={styles.row}>
+                    <View style={[styles.inputContainer, styles.halfInputContainer]}>
+                        <Text style={styles.label}>Serving Size</Text>
+                        <TextInput
+                            style={[styles.input, styles.halfInput]}
+                            value={servingSize}
+                            onChangeText={setServingSize}
+                        />
+                    </View>
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Serving Size</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={servingSize}
-                        onChangeText={setServingSize}
-                    />
+                    <View style={[styles.inputContainer, styles.halfInputContainer]}>
+                        <Text style={styles.label}>Main Base</Text>
+                        <TextInput
+                            style={[styles.input, styles.halfInput]}
+                            value={mainBase}
+                            onChangeText={setMainBase}
+                        />
+                    </View>
                 </View>
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Main Base</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={mainBase}
-                        onChangeText={setMainBase}
-                    />
-                </View>
-
                 <View style={styles.section}>
                     <Text style={styles.label}>Ingredients</Text>
                     {ingredients.map((ingredient, index) => (
-                        <TextInput
-                            key={`ingredient-${index}`}
-                            style={styles.input}
-                            value={ingredient}
-                            onChangeText={text => {
-                                const newIngredients = [...ingredients];
-                                newIngredients[index] = text;
-                                setIngredients(newIngredients);
-                            }}
-                        />
+                        <View style={styles.ingredientContainer} key={`ingredient-${index}`}>
+                            <TextInput
+                                style={styles.input}
+                                value={ingredient}
+                                onChangeText={text => {
+                                    const newIngredients = [...ingredients];
+                                    newIngredients[index] = text;
+                                    setIngredients(newIngredients);
+                                }}
+                                placeholder="Ingredient"
+                            />
+                            {ingredients.length > 1 && (
+                                <TouchableOpacity
+                                    style={styles.removeButton}
+                                    onPress={() => {
+                                        const newIngredients = ingredients.filter((_, i) => i !== index);
+                                        setIngredients(newIngredients);
+                                    }}
+                                >
+                                    <Icon name="close-circle" size={24} color="white" />
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     ))}
                     <TouchableOpacity style={styles.button} onPress={addIngredient}>
                         <Text style={styles.buttonText}>Add ingredient</Text>
                     </TouchableOpacity>
                 </View>
-
                 <View style={styles.section}>
                     <Text style={styles.label}>Instructions</Text>
                     {instructions.map((instruction, index) => (
-                        <TextInput
-                            key={`instruction-${index}`}
-                            style={styles.input}
-                            value={instruction}
-                            onChangeText={text => {
-                                const newInstructions = [...instructions];
-                                newInstructions[index] = text;
-                                setInstructions(newInstructions);
-                            }}
-                        />
+                        <View style={styles.instructionContainer} key={`instruction-${index}`}>
+                            <TextInput
+                                style={styles.input}
+                                value={instruction}
+                                onChangeText={text => {
+                                    const newInstructions = [...instructions];
+                                    newInstructions[index] = text;
+                                    setInstructions(newInstructions);
+                                }}
+                                placeholder={`Step ${index + 1}`}
+                            />
+                            {instructions.length > 1 && (
+                                <TouchableOpacity
+                                    style={styles.removeButton}
+                                    onPress={() => {
+                                        const newInstructions = instructions.filter((_, i) => i !== index);
+                                        setInstructions(newInstructions);
+                                    }}
+                                >
+                                    <Icon name="close" style={styles.removeIcon} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     ))}
                     <TouchableOpacity style={styles.button} onPress={addInstruction}>
                         <View style={styles.plusButton}>
@@ -91,7 +116,6 @@ const AddNewRecipe = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-
                 <View style={styles.section}>
                     <Text style={styles.label}>Sharing Options</Text>
                 </View>
@@ -105,6 +129,15 @@ const AddNewRecipe = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    halfInputContainer: {
+        width: '48%',
+    },
+    halfInput: {
+    },
     backButton: {
         position: 'absolute',
         color: 'white',
@@ -143,26 +176,49 @@ const styles = StyleSheet.create({
     input: {
         backgroundColor: "#141B25",
         color: "#FFFFFF",
+        flex: 1,
         borderWidth: 1,
         padding: 10,
         borderRadius: 5,
         marginBottom: 10,
+    },
+    ingredientContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+    instructionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    removeButton: {
+        marginLeft: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    removeIcon: {
+        color: 'white',
+        width: 20,
+        height: 20,
     },
     section: {
         marginBottom: 20,
     },
     button: {
         alignItems: 'center',
-        backgroundColor: '#DDDDDD',
+        backgroundColor: '#141B25',
         padding: 10,
-        borderRadius: 5,
+        width: '70%',
+        marginLeft: 25,
+        borderRadius: 10,
     },
     buttonText: {
+        color: "#FFFFFF",
         fontSize: 18,
     },
     plusButton: {
         alignItems: 'center',
-        backgroundColor: 'lightgray',
         padding: 10,
         borderRadius: 5,
         height: 50,
@@ -171,7 +227,7 @@ const styles = StyleSheet.create({
     },
     plusText: {
         fontSize: 24,
-        color: 'black',
+        color: "#FFFFFF",
     },
     saveButton: {
         backgroundColor: 'blue',
