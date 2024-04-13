@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 
+const ItemSeparator = () => (
+  <View style={{ height: 20 }} /> 
+);
 const MyRecipes: React.FC = () => {
   const [recipes, setRecipes] = useState([
     {
@@ -35,7 +38,7 @@ const MyRecipes: React.FC = () => {
       servings: 2,
       category: 'Classic',
       image: require('@assets/recipes/manhattan.png')
-    }, 
+    },
     {
       id: '5',
       name: 'Manhattan',
@@ -100,6 +103,7 @@ const MyRecipes: React.FC = () => {
         renderItem={renderRecipe}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.recipesContainer}
+        ItemSeparatorComponent={ItemSeparator}
       />
     </View>
   );
@@ -139,8 +143,8 @@ const styles = StyleSheet.create({
   recipesContainer: {
     flexGrow: 1,
     backgroundColor: '#050C1C',
-    padding: 10,
-    paddingVertical: 20,
+    paddingHorizontal: 10,
+    paddingTop: 20,
   },
   screenSection: {
     padding: 24,
@@ -151,16 +155,13 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   recipeContainer: {
-    width: 'calc(100% - 48px)',
+    overflow: 'hidden',
     height: 196,
     borderRadius: 8,
-    overflow: 'hidden',
-    border: 'none',
   },
   recipeCoverImg: {
     width: '100%',
     height: '100%',
-    margin: 0,
     resizeMode: 'cover',
   },
   cocktailDetails: {
