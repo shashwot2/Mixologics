@@ -46,6 +46,7 @@ const HomeScreen: React.FC = () => {
         },
         tabBarStyle: {
           backgroundColor: '#141B25',
+          borderTopWidth: 0,
         },
       })}>
       <Tab.Screen
@@ -82,15 +83,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  innerContainer: {
-    width: '80%',
-    alignItems: 'center',
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
 });
 

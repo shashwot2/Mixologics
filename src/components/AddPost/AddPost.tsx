@@ -30,7 +30,7 @@ const AddPost: React.FC = () => {
     creation.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSearch = (text) => {
+  const handleSearch = (text:string) => {
     setSearchQuery(text);
   };
   const [selectedRecipes, setSelectedRecipes] = useState([]);
