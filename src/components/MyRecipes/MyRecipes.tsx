@@ -12,17 +12,36 @@ const MyRecipes: React.FC = ({ navigation }) => {
       name: 'Manhattan',
       base: 'Rye',
       servings: 2,
-      steps: 2,
+      steps: [
+        {
+          "stepNumber": 1,
+          "description": "Gather all ingredients."
+        },
+        {
+          "stepNumber": 2,
+          "description": "Mix the rye and sweet vermouth in a mixing glass with ice.",
+          "image": require('@assets/recipes/manhattan/step2.png')
+        },
+        {
+          "stepNumber": 3,
+          "description": "Stir well and strain into a chilled cocktail glass.",
+          "image": require('@assets/recipes/manhattan/step3.png')
+        },
+        {
+          "stepNumber": 4,
+          "description": "Garnish with a cherry.",
+        }
+      ],
       category: 'Classic',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
-      image: require('@assets/recipes/manhattan.png')
+      image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
       id: '2',
       name: 'Bellini',
       base: 'Prosecco',
       servings: 4,
-      steps: 2,
+      steps: [],
       category: 'Classic',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
@@ -32,7 +51,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       name: 'Bloody Mary',
       base: 'Vermouth',
       servings: 2,
-      steps: 2,
+      steps: [],
       category: 'Classic',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bloodymary.png')
@@ -42,17 +61,17 @@ const MyRecipes: React.FC = ({ navigation }) => {
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
-      steps: 2,
+      steps: [],
       category: 'Classic',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
-      image: require('@assets/recipes/manhattan.png')
+      image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
       id: '5',
       name: 'Bellini',
       base: 'Vermouth',
       servings: 2,
-      steps: 2,
+      steps: [],
       category: 'Created',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
       image: require('@assets/recipes/bellini.png')
@@ -62,20 +81,20 @@ const MyRecipes: React.FC = ({ navigation }) => {
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
-      steps: 2,
+      steps: [],
       category: 'Created',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
-      image: require('@assets/recipes/manhattan.png')
+      image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
       id: '7',
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
-      steps: 2,
+      steps: [],
       category: 'Saved',
       ingredients:["2 oz Rye", "1 oz Sweet Vermouth", "2 dashes Angostura Bitters", "1 Cherry for garnish",],
-      image: require('@assets/recipes/manhattan.png')
+      image: require('@assets/recipes/manhattan/manhattan.png')
     },
   ]);
   const renderRecipe = ({ item }) => (
