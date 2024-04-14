@@ -6,6 +6,8 @@ import vodka from '@assets/mybaricons/vodka.png'
 import photo from '@assets/photo.png'
 import myrecipes from '@assets/myrecipes-active.png'
 import profile from '@assets/profile.png'
+import Icon from 'react-native-vector-icons/Ionicons';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const RecipeCard = ({ title, image, onDelete }) => (
   <View style={styles.recipeCardContainer}>
@@ -19,7 +21,19 @@ const RecipeCard = ({ title, image, onDelete }) => (
   </View>
 );
 
-const AddPost: React.FC = () => {
+const AddPost = ({ navigation }) => {
+  const [imageSource, setImageSource] = useState(null)
+  const handleChoosePhoto = () => {
+    const options = {
+      noData: true,
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.uri) {
+        setImageSource(response);
+      }
+    });
+  };
   const [creations, setCreations] = useState([
     { id: '1', title: 'Bloody Mary', image: whisky },
     { id: '2', title: 'Vodka', image: vodka }
@@ -30,7 +44,7 @@ const AddPost: React.FC = () => {
     creation.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSearch = (text:string) => {
+  const handleSearch = (text: string) => {
     setSearchQuery(text);
   };
   const [selectedRecipes, setSelectedRecipes] = useState([]);
@@ -53,7 +67,7 @@ const AddPost: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <Text style={styles.headerText}>Back Icon</Text>
+          <Icon name="arrow-back" size={24} color="white" onPress={() => navigation.goBack()} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Create New Post</Text>
         <TouchableOpacity>
@@ -63,9 +77,15 @@ const AddPost: React.FC = () => {
       <View style={styles.inputArea}>
         <TextInput style={styles.inputAreaText} placeholder="Add a description..." placeholderTextColor="#818B99" />
       </View>
+       {imageSource && (
+        <Image
+          source={{ uri: imageSource.uri }}
+          style={{ width: 300, height: 300 }}
+        />
+      )}
       <View style={styles.smallRecipes}>
         <View style={styles.tabBar}>
-          <TouchableOpacity style={styles.tabItem}>
+          <TouchableOpacity style={styles.tabItem} onPress={handleChoosePhoto}>
             <Image source={photo} style={styles.posticons} />
             <Text style={{ color: 'white', paddingLeft: 5 }}>Photo</Text>
           </TouchableOpacity>
@@ -87,33 +107,33 @@ const AddPost: React.FC = () => {
           onChangeText={handleSearch}
         />
         <Text style={styles.sectionTitle}>Selected Recipes</Text>
-      <ScrollView horizontal style={{ flexDirection: 'row' }}>
-        {selectedRecipes.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            title={recipe.title}
-            image={recipe.image}
-            onDelete={() => handleDeleteRecipe(recipe.id)} // Pass the delete function
-          />
-        ))}
-      </ScrollView>
-      <Text style={styles.yourCreations}>Your Creations</Text>
-      <ScrollView horizontal style={{ flexDirection: 'row' }}>
-        {filteredCreations.map((creation) => (
-          <TouchableOpacity
-            key={creation.id}
-            onPress={() => handleSelectRecipe(creation)}
-            style={[
-              styles.recipeCard,
-              selectedRecipes.some((selected) => selected.id === creation.id)
-                ? styles.selectedRecipeCard
-                : null,
-            ]}
-          >
-            <RecipeCard title={creation.title} image={creation.image} />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <ScrollView horizontal style={{ flexDirection: 'row' }}>
+          {selectedRecipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              title={recipe.title}
+              image={recipe.image}
+              onDelete={() => handleDeleteRecipe(recipe.id)} // Pass the delete function
+            />
+          ))}
+        </ScrollView>
+        <Text style={styles.yourCreations}>Your Creations</Text>
+        <ScrollView horizontal style={{ flexDirection: 'row' }}>
+          {filteredCreations.map((creation) => (
+            <TouchableOpacity
+              key={creation.id}
+              onPress={() => handleSelectRecipe(creation)}
+              style={[
+                styles.recipeCard,
+                selectedRecipes.some((selected) => selected.id === creation.id)
+                  ? styles.selectedRecipeCard
+                  : null,
+              ]}
+            >
+              <RecipeCard title={creation.title} image={creation.image} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -130,7 +150,7 @@ const styles = {
     backgroundColor: "#050C1C"
   },
   recipeCardContainer: {
-    position:'relative',
+    position: 'relative',
     margin: 10,
   },
   inputAreaText: {
@@ -184,7 +204,7 @@ const styles = {
     borderColor: 'white',
     borderWidth: 0.5,
   },
-  
+
   sectionTitle: {
     color: '#FFFFFF',
     fontSize: 12,
@@ -195,12 +215,12 @@ const styles = {
   },
   deleteButton: {
     position: 'absolute',
-    top: 0, 
+    top: 0,
     right: 0,
     backgroundColor: 'white',
-    borderRadius: 7.5, 
+    borderRadius: 7.5,
     width: 15,
-    height: 15, 
+    height: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -208,7 +228,7 @@ const styles = {
   deleteButtonText: {
     color: 'black',
     fontSize: 8,
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
   },
 };
 

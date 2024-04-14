@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     uploadRecipeButton: {
         backgroundColor: '#141B25',
         padding: 10,
-        paddingTop:25,
+        paddingTop: 25,
         marginLeft: 250,
         borderRadius: 5,
     },
