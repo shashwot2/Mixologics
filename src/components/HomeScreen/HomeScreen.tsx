@@ -7,15 +7,49 @@ import {
   Button,
   StyleSheet,
 } from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 import MyBar from '@components/MyBar/MyBar';
 import MyRecipes from '@components/MyRecipes/MyRecipes';
 import MediaHome from '@components/MediaHome/MediaHome';
 import AddPost from '@components/AddPost/AddPost';
 import Profile from '@components/Profile/Profile';
+import { createStackNavigator } from '@react-navigation/stack';
+import RecipeDetailScreen from '@components/MyRecipes/RecipeDetailScreen';
+import AddNewRecipe from '@components/MyRecipes/AddNewRecipe';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
+const RecipesStack = createStackNavigator();
+function MyRecipesStack() {
+  return (
+    <RecipesStack.Navigator>
+      <RecipesStack.Screen
+        name="MyRecipesList"
+        component={MyRecipes}
+        options={{ headerShown: false }}
+      />
+      <RecipesStack.Screen
+        name="RecipeDetails"
+        component={RecipeDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RecipesStack.Screen
+        name="AddNewRecipe"
+        component={AddNewRecipe}
+        options={{ headerShown: false }}
+      />
+    </RecipesStack.Navigator>
+  );
+}
+function getTabBarVisibility(route: any) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? route.name;
+
+  const hideOnScreens = ['RecipeDetails', 'AddPost', 'AddNewRecipe'];
+  return hideOnScreens.includes(routeName) ? 'none' : 'flex';
+}
 
 const HomeScreen: React.FC = () => {
   return (
@@ -42,7 +76,12 @@ const HomeScreen: React.FC = () => {
               ? require('@assets/profile-active.png')
               : require('@assets/profile.png');
           }
-          return <Image source={uri} style={{width: size, height: size}} />;
+          return <Image source={uri} style={{ width: size, height: size }} />;
+        },
+        tabBarStyle: {
+          backgroundColor: '#141B25',
+          borderTopWidth: 0,
+          display: getTabBarVisibility(route),
         },
         tabBarStyle: {
           backgroundColor: '#141B25',
@@ -51,27 +90,27 @@ const HomeScreen: React.FC = () => {
       <Tab.Screen
         name="MediaHome"
         component={MediaHome}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="MyRecipes"
-        component={MyRecipes}
-        options={{headerShown: false}}
+        component={MyRecipesStack}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="AddPost"
         component={AddPost}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="MyBar"
         component={MyBar}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );
@@ -82,15 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  innerContainer: {
-    width: '80%',
-    alignItems: 'center',
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
 });
 

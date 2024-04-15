@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native';
 import {onAuthStateChanged} from '@auth/auth';
 
 import HomeScreen from '@components/HomeScreen/HomeScreen';
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
+    <SafeAreaView style={{flex:1}}>
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
@@ -33,6 +35,7 @@ const App: React.FC = () => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaView>
   );
 };
 
