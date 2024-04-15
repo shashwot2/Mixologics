@@ -1,5 +1,6 @@
 import { BottomTabView } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
 import {
   View,
   TextInput,
@@ -26,26 +27,27 @@ const MyBarHeader = ({ onAdd }) => (
   </View>
 );
 const MyBar: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('Spirits');
+  const [activeCategory, setActiveCategory] = useState('spirits');
   const [isModalVisible, setModalVisible] = useState(false);
   const dummyData = {
+    userName: "defaultUser",
 
     spirits: [
       {
         id: '001',
-        name: 'Vodka',
+        drinkName: 'Vodka',
         category: 'plain',
         icon: '@assets/mybaricons/vodka.png',
       },
       {
         id: '002',
-        name: 'Champagne',
+        drinkName: 'Champagne',
         category: 'sparkling',
         icon: '@assets/mybaricons/champagne.png',
       },
       {
         id: '003',
-        name: 'Whisky',
+        drinkName: 'Whisky',
         category: 'scotch',
         icon: '@assets/mybaricons/whisky.png',
       },
@@ -53,14 +55,14 @@ const MyBar: React.FC = () => {
     mixers: [
       {
         id: '001',
-        name: 'Coke',
+        drinkName: 'Coke',
         category: 'soda',
         icon: '@assets/mybaricons/coke.png',
       },
     ],
     fruits: [{
       id: '001',
-      name: 'Coke',
+      drinkName: 'Coke',
       category: 'soda',
       icon: '@assets/mybaricons/coke.png',
     },
@@ -68,7 +70,7 @@ const MyBar: React.FC = () => {
     herbs: [
       {
         id: '001',
-        name: 'Coke',
+        drinkName: 'Coke',
         category: 'soda',
         icon: '@assets/mybaricons/coke.png',
       },
@@ -76,39 +78,98 @@ const MyBar: React.FC = () => {
     flavorings: [
       {
         id: '001',
-        name: 'Coke',
+        drinkName: 'Coke',
         category: 'soda',
         icon: '@assets/mybaricons/coke.png',
       },
     ],
   };
-  const [myBarData, setMyBarData] = useState(dummyData);
-  const [error, setError] = useState('');
-  const userEmail = "shashwot_07@hotmail.com";
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`http://192.168.1.172:3000/api/mybar/shashwot_07@hotmail.com`);
-        const data = await response.json();
-        if (response.ok) {
-          setMyBarData(data);
-        } else {
-          throw new Error('Failed to fetch data');
-        }
-      } catch (error) {
-        setError('Error fetching data');
-        console.error('Error fetching data:', error);
-      }
-    };
 
+  const [error, setError] = useState('');
+  const [ingredientName, setIngredientName] = useState('');
+  const [ingredientCategory, setIngredientCategory] = useState('spirits');
+  const [ingredientIcon, setIngredientIcon] = useState('');
+  const userEmail = "shashwot_07@hotmail.com";
+  const initialData = {
+    userName: userEmail,
+    spirits: [],
+    mixers: [],
+    fruits: [],
+    herbs: [],
+    flavorings: []
+  };
+  const [myBarData, setMyBarData] = useState(initialData);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://192.168.1.172:3000/api/mybar/shashwot_07@hotmail.com`);
+      const data = await response.json();
+      if (response.ok) {
+        setMyBarData(data);
+      } else {
+        setMyBarData(dummyData);
+        throw new Error('Failed to fetch data');
+      }
+    } catch (error) {
+      setError('Error fetching data');
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, []);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const addIngredient = () => {
+    const newIngredient = {
+      id: Math.random().toString(36).substr(2, 9),
+      drinkName: ingredientName,
+      category: ingredientCategory,
+      icon: ingredientIcon
+    };
+
+    setMyBarData(prevData => {
+      const updatedData = { ...prevData };
+
+      if (!updatedData[newIngredient.category]) {
+        updatedData[newIngredient.category] = [];
+      }
+
+      updatedData[newIngredient.category].push(newIngredient);
+      console.log("Updated data:", updatedData);
+      saveIngredient({ ...updatedData, userName: userEmail });
+      return updatedData;
+    });
+
+    setIngredientName('');
+    setIngredientCategory('');
+    setIngredientIcon('');
+    toggleModal();
+  };
+  const saveIngredient = async (updatedData) => {
+    updatedData = { ...updatedData, 'userName': userEmail }
+    console.log("New Ingredient:", updatedData)
+    try {
+      const response = await fetch('http://192.168.1.172:3000/api/mybar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to save ingredient');
+      }
+      console.log('Ingredient added:', data);
+      fetchData();
+    } catch (error) {
+      console.error('Error saving ingredient:', error);
+    }
+  };
   const activeItems = myBarData[activeCategory];
   const addItem = category => {
     toggleModal(category);
-  };
-  const toggleModal = category => {
-    setModalVisible(!isModalVisible);
   };
   // Function to resolve the correct image
   const resolveIcon = iconPath => {
@@ -162,7 +223,7 @@ const MyBar: React.FC = () => {
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
             <Image source={resolveIcon(item.icon)} style={styles.icon} />
-            <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemText}>{item.drinkName}</Text>
           </View>
         )}
       />
@@ -171,31 +232,48 @@ const MyBar: React.FC = () => {
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={toggleModal}>
+        onRequestClose={toggleModal}
+      >
         <TouchableOpacity
           activeOpacity={1}
           style={styles.fullScreenCentered}
-          onPress={toggleModal}>
+          onPress={toggleModal}
+        >
           <View style={styles.modalView}>
             <TouchableOpacity
               activeOpacity={1}
-              onPress={e => e.stopPropagation()}>
+              onPress={e => e.stopPropagation()}
+            >
               <Text style={styles.modalText}>Name</Text>
               <TextInput
                 style={styles.inputBox}
-              // value={name}
+                value={ingredientName}
+                onChangeText={setIngredientName}
               />
 
               <Text style={styles.modalText}>Category</Text>
+              <Picker
+                selectedValue={ingredientCategory}
+                style={styles.pickerStyle}
+                onValueChange={(itemValue, itemIndex) => setIngredientCategory(itemValue)}
+              >
+                {categories.map((category) => (
+                  <Picker.Item key={category} label={category} value={category} />
+                ))}
+              </Picker>
+
+              <Text style={styles.modalText}>Photo</Text>
               <TextInput
                 style={styles.inputBox}
-              //        value={categories}
+                value={ingredientIcon}
+                onChangeText={setIngredientIcon}
               />
-              <Text style={styles.modalText}>Photo</Text>
+
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
-                onPress={toggleModal}>
-                <Text style={styles.textStyle}>Add</Text>
+                onPress={toggleModal}
+              >
+                <Text style={styles.textStyle} onPress={addIngredient}>Add</Text>
               </TouchableOpacity>
             </TouchableOpacity>
           </View>
@@ -205,6 +283,12 @@ const MyBar: React.FC = () => {
   );
 };
 const styles = StyleSheet.create({
+  pickerStyle: {
+    height: 50,
+    width: 300,
+    color: 'white',
+    backgroundColor: '#141B25',
+  },
   container: {
     flex: 1,
     backgroundColor: '#050C1C',
@@ -296,6 +380,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   modalView: {
+    padding: 20,
     flex: 1,
     justifyContent: 'flex-end',
     position: 'absolute',
@@ -329,6 +414,7 @@ const styles = StyleSheet.create({
   modalText: {
     color: 'white',
     textAlign: 'left',
+    marginTop: 20,
   },
   fullScreenCentered: {
     flex: 1,
@@ -337,12 +423,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   inputBox: {
+    minHeight: 50,
     backgroundColor: '#141B25',
     color: 'white',
     borderRadius: 10,
     height: 15,
     fontSize: 18,
     padding: 15,
+    marginTop: 20,
     marginBottom: 20,
   },
 
