@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
+
 const AddNewRecipe = ({ navigation }) => {
     const [recipeName, setRecipeName] = useState('');
     const [servingSize, setServingSize] = useState('');
@@ -10,7 +11,55 @@ const AddNewRecipe = ({ navigation }) => {
     const [instructions, setInstructions] = useState([{ text: '', imageUrl: null }]);
     const [instructionImages, setInstructionImages] = useState({});
     const [recipeImage, setRecipeImage] = useState(null);
-
+    const submitRecipe = async () => {
+        const formData = new FormData();
+    
+        formData.append('name', recipeName);
+        formData.append('base', mainBase);
+        formData.append('servings', servingSize);
+    
+        ingredients.forEach((ingredient, index) => {
+            formData.append(`ingredients[${index}]`, ingredient);
+        });
+    
+        instructions.forEach((instruction, index) => {
+            formData.append(`instructions[${index}][text]`, instruction.text);
+            if (instruction.imageUrl) {
+                formData.append(`instructions[${index}][image]`, {
+                    uri: instruction.imageUrl,
+                    type: 'image/jpeg', 
+                    name: `instructionImage_${index}.jpg`
+                });
+            }
+        });
+    
+        if (recipeImage) {
+            formData.append('recipeImage', {
+                uri: recipeImage,
+                type: 'image/jpeg', 
+                name: 'recipeImage.jpg'
+            });
+        }
+    
+        console.log("Sent formdata to recipes", formData);
+    
+        try {
+            const response = await fetch('http://192.168.1.172:3000/api/recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data', 
+                },
+                body: formData,
+            });
+    
+            if (!response.ok) throw new Error('Network response was not ok.');
+            const result = await response.json();
+            console.log('Recipe created:', result);
+            navigation.goBack();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
 
     const addIngredient = () => {
         setIngredients([...ingredients, '']);
@@ -185,7 +234,7 @@ const AddNewRecipe = ({ navigation }) => {
                     <Text style={styles.label}>Sharing Options</Text>
                 </View>
 
-                <TouchableOpacity style={styles.saveButton}>
+                <TouchableOpacity style={styles.saveButton} onPress={submitRecipe}>
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
             </View>
