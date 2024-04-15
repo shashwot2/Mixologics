@@ -54,8 +54,8 @@ function getTabBarVisibility(route: any) {
 const HomeScreen: React.FC = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           let uri;
           if (route.name === 'MediaHome') {
             uri = focused
@@ -82,6 +82,9 @@ const HomeScreen: React.FC = () => {
           backgroundColor: '#141B25',
           borderTopWidth: 0,
           display: getTabBarVisibility(route),
+        },
+        tabBarStyle: {
+          backgroundColor: '#141B25',
         },
       })}>
       <Tab.Screen

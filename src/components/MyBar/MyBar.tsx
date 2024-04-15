@@ -42,6 +42,7 @@ const MyBar: React.FC = () => {
       {
         id: '002',
         drinkName: 'Champagne',
+        name: 'Champagne',
         category: 'sparkling',
         icon: '@assets/mybaricons/champagne.png',
       },
@@ -431,6 +432,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 15,
     marginTop: 20,
+
     marginBottom: 20,
   },
 
