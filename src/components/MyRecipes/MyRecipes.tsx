@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 
@@ -8,7 +9,7 @@ const ItemSeparator = () => (
 const MyRecipes: React.FC = ({ navigation }) => {
   const [recipes, setRecipes] = useState([
     {
-      id: '1',
+      recipeId: '1',
       name: 'Manhattan',
       base: 'Rye',
       servings: 2,
@@ -37,7 +38,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
-      id: '2',
+      recipeId: '2',
       name: 'Bellini',
       base: 'Prosecco',
       servings: 4,
@@ -47,7 +48,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/bellini.png')
     },
     {
-      id: '3',
+      recipeId: '3',
       name: 'Bloody Mary',
       base: 'Vermouth',
       servings: 2,
@@ -57,7 +58,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/bloodymary.png')
     },
     {
-      id: '4',
+      recipeId: '4',
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
@@ -67,7 +68,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
-      id: '5',
+      recipeId: '5',
       name: 'Bellini',
       base: 'Vermouth',
       servings: 2,
@@ -77,7 +78,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/bellini.png')
     },
     {
-      id: '6',
+      recipeId: '6',
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
@@ -87,7 +88,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
     {
-      id: '7',
+      recipeId: '7',
       name: 'Manhattan',
       base: 'Vermouth',
       servings: 2,
@@ -97,25 +98,81 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
   ]);
-  const renderRecipe = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipe: item })}>
-      <View style={styles.recipeContainer}>
-        <Image style={styles.recipeCoverImg} source={item.image} />
-        <View style={styles.cocktailDetails}>
-          <Text style={styles.cocktailName}>{item.name}</Text>
-          <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
-          <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const resolveAsset = (path) => {
+    console.log('path:', path);
 
+    const assetMap = {
+      '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
+      '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
+      '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
+      '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
+      '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
+    };
+
+    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;  // This regex should now correctly match and capture the path
+    const match = path.match(requirePattern);
+    console.log('Regex match:', match);
+
+    if (match) {
+      console.log('Matched path:', match[1]);
+      return assetMap[match[1]];  // Using match[1] which is the captured path
+    } else if (typeof path === 'string' && path.match(/^https?:\/\//)) {
+      console.log('URL:', path);
+      return { uri: path };
+    } else if (path in assetMap) {
+      console.log('Direct map access:', path);
+      return assetMap[path];
+    } else if (typeof path === 'string') {
+      console.log('Fallback URI:', path);
+      return { uri: path };
+    }
+
+    console.log('Using placeholder for path:', path);
+    return require('@assets/placeholder.png'); // Fallback if nothing matches
+  };
+
+  const renderRecipe = ({ item }) => {
+    const imageSource = resolveAsset(item.image);
+
+    const stepsWithResolvedImages = item.steps.map(step => ({
+      ...step,
+      image: step.image ? resolveAsset(step.image) : null
+    }));
+
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipe: { ...item, image: imageSource, steps: stepsWithResolvedImages } })}>
+        <View style={styles.recipeContainer}>
+          <Image style={styles.recipeCoverImg} source={imageSource} />
+          <View style={styles.cocktailDetails}>
+            <Text style={styles.cocktailName}>{item.name}</Text>
+            <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
+            <Text style={styles.cocktailServings}>Servings: {item.servings}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
   const AddNewRecipeButton = ({ onPress }) => (
     <TouchableOpacity style={styles.addNewRecipeButton} onPress={onPress}>
       <Text style={styles.addNewRecipeText}>+</Text>
     </TouchableOpacity>
   );
 
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get('http://192.168.1.172:3000/api/recipes');
+        if (response.status === 200) {
+          setRecipes(response.data);
+          console.log('Recipes fetched:', response.data[0].image);
+        }
+      } catch (error) {
+        console.error('Failed to fetch recipes:', error);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('Classic');
   const [searchQuery, setSearchQuery] = useState('');
   const filteredRecipes = recipes.filter(recipe => {
@@ -150,7 +207,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       <FlatList
         data={filteredRecipes}
         renderItem={renderRecipe}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.RecipeId}
         contentContainerStyle={styles.recipesContainer}
         ItemSeparatorComponent={ItemSeparator}
         ListFooterComponent={selectedCategory === 'Created' ? () => <AddNewRecipeButton onPress={() => navigation.navigate('AddNewRecipe')} /> : null}

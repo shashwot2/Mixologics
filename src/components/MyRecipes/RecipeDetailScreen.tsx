@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     stepTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color:'#FFFFFF',
+        color: '#FFFFFF',
         marginBottom: 5,
     },
     stepDescription: {
