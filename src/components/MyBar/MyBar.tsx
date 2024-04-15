@@ -1,5 +1,5 @@
 import { BottomTabView } from '@react-navigation/bottom-tabs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TextInput,
@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
-const categories = ['Spirits', 'Mixers', 'Fruits', 'Herbs', 'Flavoring'];
+const categories = ['spirits', 'mixers', 'fruits', 'herbs', 'flavoring'];
 const MyBarHeader = ({ onAdd }) => (
   <View style={styles.headerContainer}>
     <View style={styles.headerTextContainer}>
@@ -29,7 +29,8 @@ const MyBar: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('Spirits');
   const [isModalVisible, setModalVisible] = useState(false);
   const dummyData = {
-    Spirits: [
+
+    spirits: [
       {
         id: '001',
         name: 'Vodka',
@@ -49,7 +50,7 @@ const MyBar: React.FC = () => {
         icon: '@assets/mybaricons/whisky.png',
       },
     ],
-    Mixers: [
+    mixers: [
       {
         id: '001',
         name: 'Coke',
@@ -57,23 +58,23 @@ const MyBar: React.FC = () => {
         icon: '@assets/mybaricons/coke.png',
       },
     ],
-    Fruits: [{
+    fruits: [{
+      id: '001',
+      name: 'Coke',
+      category: 'soda',
+      icon: '@assets/mybaricons/coke.png',
+    },
+    ],
+    herbs: [
+      {
         id: '001',
         name: 'Coke',
         category: 'soda',
         icon: '@assets/mybaricons/coke.png',
       },
     ],
-    Herbs: [
-{
-        id: '001',
-        name: 'Coke',
-        category: 'soda',
-        icon: '@assets/mybaricons/coke.png',
-      },
-    ],
-    Flavorings: [
-{
+    flavorings: [
+      {
         id: '001',
         name: 'Coke',
         category: 'soda',
@@ -81,7 +82,28 @@ const MyBar: React.FC = () => {
       },
     ],
   };
-  const activeItems = dummyData[activeCategory];
+  const [myBarData, setMyBarData] = useState(dummyData);
+  const [error, setError] = useState('');
+  const userEmail = "shashwot_07@hotmail.com";
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://192.168.1.172:3000/api/mybar/shashwot_07@hotmail.com`);
+        const data = await response.json();
+        if (response.ok) {
+          setMyBarData(data);
+        } else {
+          throw new Error('Failed to fetch data');
+        }
+      } catch (error) {
+        setError('Error fetching data');
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const activeItems = myBarData[activeCategory];
   const addItem = category => {
     toggleModal(category);
   };
@@ -229,16 +251,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addHeaderButton:{
+  addHeaderButton: {
     backgroundColor: '#141B25',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight:40,
-    width:40,
-    height:40,
+    marginRight: 40,
+    width: 40,
+    height: 40,
   },
-  tabView:{
-    flex:1,
+  tabView: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
     minHeight: 50,
