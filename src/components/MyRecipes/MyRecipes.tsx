@@ -99,19 +99,23 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
   ]);
-  const resolveAsset = (path) => {
-    console.log('path:', path);
 
-    
+  const resolveAsset = (path) => {
+    const baseUrl = "https://pub-6d9459f727474eb0a721f2528d5ae857.r2.dev/";
+    console.log('path:', path);
     if (typeof path !== 'string') {
-      path = String(path); 
-  }
+      path = String(path);
+    }
+    if (typeof path === 'string' && path.startsWith('uploads/')) {
+      return { uri: `${baseUrl}${encodeURIComponent(path)}` };  // Create a full URL for the image
+    }
+
     const assetMap = {
-        '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
-        '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
-        '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
-        '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
-        '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
+      '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
+      '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
+      '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
+      '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
+      '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
     };
 
     const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
@@ -175,11 +179,11 @@ const MyRecipes: React.FC = ({ navigation }) => {
   useEffect(() => {
     fetchRecipes();
   }, []);
-// for navigation through to children pages
+  // for navigation through to children pages
   useFocusEffect(
     useCallback(() => {
       fetchRecipes();
-      return () => {};
+      return () => { };
     }, [])
   );
   const [selectedCategory, setSelectedCategory] = useState('Classic');
