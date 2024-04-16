@@ -248,6 +248,10 @@ const MyBar: React.FC = () => {
       '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
       '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
       '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
+      '@assets/mybaricons/vodka.png': require('@assets/mybaricons/vodka.png'),
+      '@assets/mybaricons/champagne.png': require('@assets/mybaricons/champagne.png'),
+      '@assets/mybaricons/whisky.png': require('@assets/mybaricons/whisky.png'),
+      '@assets/mybaricons/coke.png': require('@assets/mybaricons/coke.png'),
     };
 
     const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
