@@ -12,44 +12,29 @@ const AddNewRecipe = ({ navigation }) => {
     const [instructionImages, setInstructionImages] = useState({});
     const [recipeImage, setRecipeImage] = useState(null);
     const submitRecipe = async () => {
-        const formData = new FormData();
     
-        formData.append('name', recipeName);
-        formData.append('base', mainBase);
-        formData.append('servings', servingSize);
-    
-        ingredients.forEach((ingredient, index) => {
-            formData.append(`ingredients[${index}]`, ingredient);
-        });
-    
-        instructions.forEach((instruction, index) => {
-            formData.append(`instructions[${index}][text]`, instruction.text);
-            if (instruction.imageUrl) {
-                formData.append(`instructions[${index}][image]`, {
-                    uri: instruction.imageUrl,
-                    type: 'image/jpeg', 
-                    name: `instructionImage_${index}.jpg`
-                });
-            }
-        });
-    
-        if (recipeImage) {
-            formData.append('recipeImage', {
-                uri: recipeImage,
-                type: 'image/jpeg', 
-                name: 'recipeImage.jpg'
-            });
-        }
-    
-        console.log("Sent formdata to recipes", formData);
+        const recipeData = {
+            name: recipeName,
+            base: mainBase,
+            servings: servingSize,
+            category: "Created", 
+            steps: await Promise.all(instructions.map(async (instruction, index) => ({
+                stepNumber: index + 1,
+                description: instruction.text,
+                image: instruction.imageUrl,
+            }))),
+            ingredients: ingredients,
+            image: ''
+        };
+        console.log(recipeData)
     
         try {
             const response = await fetch('http://192.168.164.63:3000/api/recipes', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data', 
+                    'Content-Type': 'application/json',
                 },
-                body: formData,
+                body: JSON.stringify(recipeData),
             });
     
             if (!response.ok) throw new Error('Network response was not ok.');
@@ -60,7 +45,6 @@ const AddNewRecipe = ({ navigation }) => {
             console.error('Error submitting form:', error);
         }
     };
-
     const addIngredient = () => {
         setIngredients([...ingredients, '']);
     };
