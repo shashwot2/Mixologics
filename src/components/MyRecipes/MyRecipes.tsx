@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import Config from 'react-native-config';
 
 const ItemSeparator = () => (
   <View style={{ height: 20 }} />
@@ -161,7 +162,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
   );
   const fetchRecipes = async () => {
     try {
-      const response = await axios.get('http://192.168.164.63:3000/api/recipes');
+      const response = await axios.get(`http://${Config.ip}:3000/api/recipes`);
       if (response.status === 200) {
         setRecipes(response.data);
         console.log('Recipes fetched:', response.data[0].image);

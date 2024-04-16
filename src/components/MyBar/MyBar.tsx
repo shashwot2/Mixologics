@@ -1,6 +1,7 @@
 import { BottomTabView } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import Config from 'react-native-config';
 import {
   View,
   TextInput,
@@ -103,7 +104,7 @@ const MyBar: React.FC = () => {
   const fetchData = async () => {
     console.log("Fetching data...");
     try {
-      const response = await fetch(`http://192.168.164.63:3000/api/mybar/shashwot_07@hotmail.com`);
+      const response = await fetch(`http://${Config.ip}:3000/api/mybar/shashwot_07@hotmail.com`);
       const data = await response.json();
       if (response.ok) {
         console.log("Fetched data:", data);
@@ -156,7 +157,7 @@ const MyBar: React.FC = () => {
     updatedData = { ...updatedData, 'userName': userEmail }
     console.log("New Ingredient:", updatedData)
     try {
-      const response = await fetch('http://192.168.164.63:3000/api/mybar', {
+      const response = await fetch(`http://${Config.ip}:3000/api/mybar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

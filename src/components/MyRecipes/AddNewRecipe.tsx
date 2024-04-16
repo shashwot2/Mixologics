@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
+import Config from 'react-native-config';
 
 const AddNewRecipe = ({ navigation }) => {
     const [recipeName, setRecipeName] = useState('');
@@ -11,32 +12,64 @@ const AddNewRecipe = ({ navigation }) => {
     const [instructions, setInstructions] = useState([{ text: '', imageUrl: null }]);
     const [instructionImages, setInstructionImages] = useState({});
     const [recipeImage, setRecipeImage] = useState(null);
+
+    const uploadImage = async (imageUri) => {
+        const data = new FormData();
+        data.append('file', {
+            name: 'recipe.jpg',
+            type: 'image/jpeg',
+            uri: imageUri
+        });
+
+        try {
+            const response = await fetch(`http://${Config.ip}:3000/api/upload`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: data,
+            });
+
+            const responseJson = await response.json();
+            if (!response.ok) {
+                throw new Error('Upload failed:', responseJson.message);
+            }
+            return responseJson.location;
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            throw error;
+        }
+    };
     const submitRecipe = async () => {
-    
+        let imageUrl = recipeImage ? await uploadImage(recipeImage) : null;
+
+        const stepsWithImages = await Promise.all(instructions.map(async (instruction) => {
+            let image = null;
+            if (instruction.imageUrl) {
+                image = await uploadImage(instruction.imageUrl);
+            }
+            return { ...instruction, image };
+        }));
+
         const recipeData = {
             name: recipeName,
             base: mainBase,
             servings: servingSize,
-            category: "Created", 
-            steps: await Promise.all(instructions.map(async (instruction, index) => ({
-                stepNumber: index + 1,
-                description: instruction.text,
-                image: instruction.imageUrl,
-            }))),
+            category: "Created",
+            steps: stepsWithImages,
             ingredients: ingredients,
-            image: ''
+            image: imageUrl
         };
-        console.log(recipeData)
-    
+
         try {
-            const response = await fetch('http://192.168.164.63:3000/api/recipes', {
+            const response = await fetch(`http://${Config.ip}:3000/api/recipes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(recipeData),
             });
-    
+
             if (!response.ok) throw new Error('Network response was not ok.');
             const result = await response.json();
             console.log('Recipe created:', result);
@@ -45,6 +78,7 @@ const AddNewRecipe = ({ navigation }) => {
             console.error('Error submitting form:', error);
         }
     };
+
     const addIngredient = () => {
         setIngredients([...ingredients, '']);
     };
