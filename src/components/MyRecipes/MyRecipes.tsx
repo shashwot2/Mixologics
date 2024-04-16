@@ -1,7 +1,7 @@
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-
 
 const ItemSeparator = () => (
   <View style={{ height: 20 }} />
@@ -159,22 +159,28 @@ const MyRecipes: React.FC = ({ navigation }) => {
       <Text style={styles.addNewRecipeText}>+</Text>
     </TouchableOpacity>
   );
-
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await axios.get('http://192.168.164.63:3000/api/recipes');
-        if (response.status === 200) {
-          setRecipes(response.data);
-          console.log('Recipes fetched:', response.data[0].image);
-        }
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
+  const fetchRecipes = async () => {
+    try {
+      const response = await axios.get('http://192.168.164.63:3000/api/recipes');
+      if (response.status === 200) {
+        setRecipes(response.data);
+        console.log('Recipes fetched:', response.data[0].image);
       }
-    };
-
+    } catch (error) {
+      console.error('Failed to fetch recipes:', error);
+    }
+  };
+  //For when the user goes it the first time
+  useEffect(() => {
     fetchRecipes();
   }, []);
+// for navigation through to children pages
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecipes();
+      return () => {};
+    }, [])
+  );
   const [selectedCategory, setSelectedCategory] = useState('Classic');
   const [searchQuery, setSearchQuery] = useState('');
   const filteredRecipes = recipes.filter(recipe => {
