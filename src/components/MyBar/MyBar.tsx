@@ -101,23 +101,28 @@ const MyBar: React.FC = () => {
   };
   const [myBarData, setMyBarData] = useState(initialData);
   const fetchData = async () => {
+    console.log("Fetching data...");
     try {
-      const response = await fetch(`http://192.168.1.172:3000/api/mybar/shashwot_07@hotmail.com`);
+      const response = await fetch(`http://192.168.164.63:3000/api/mybar/shashwot_07@hotmail.com`);
       const data = await response.json();
       if (response.ok) {
+        console.log("Fetched data:", data);
         setMyBarData(data);
       } else {
-        setMyBarData(dummyData);
         throw new Error('Failed to fetch data');
       }
     } catch (error) {
+      setMyBarData(dummyData)
       setError('Error fetching data');
       console.error('Error fetching data:', error);
     }
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData().then(() => {
+        console.log("Data fetch attempt completed");
+    });
+}, []);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -151,7 +156,7 @@ const MyBar: React.FC = () => {
     updatedData = { ...updatedData, 'userName': userEmail }
     console.log("New Ingredient:", updatedData)
     try {
-      const response = await fetch('http://192.168.1.172:3000/api/mybar', {
+      const response = await fetch('http://192.168.164.63:3000/api/mybar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -44,7 +44,7 @@ const AddNewRecipe = ({ navigation }) => {
         console.log("Sent formdata to recipes", formData);
     
         try {
-            const response = await fetch('http://192.168.1.172:3000/api/recipes', {
+            const response = await fetch('http://192.168.164.63:3000/api/recipes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data', 

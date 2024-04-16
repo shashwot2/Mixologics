@@ -101,18 +101,20 @@ const MyRecipes: React.FC = ({ navigation }) => {
   const resolveAsset = (path) => {
     console.log('path:', path);
 
+    
+    if (typeof path !== 'string') {
+      path = String(path); 
+  }
     const assetMap = {
-      '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
-      '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
-      '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
-      '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
-      '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
+        '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
+        '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
+        '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
+        '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
+        '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
     };
 
-    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;  // This regex should now correctly match and capture the path
+    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
     const match = path.match(requirePattern);
-    console.log('Regex match:', match);
-
     if (match) {
       console.log('Matched path:', match[1]);
       return assetMap[match[1]];  // Using match[1] which is the captured path
@@ -124,7 +126,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       return assetMap[path];
     } else if (typeof path === 'string') {
       console.log('Fallback URI:', path);
-      return { uri: path };
+      return path;
     }
 
     console.log('Using placeholder for path:', path);
@@ -161,7 +163,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get('http://192.168.1.172:3000/api/recipes');
+        const response = await axios.get('http://192.168.164.63:3000/api/recipes');
         if (response.status === 200) {
           setRecipes(response.data);
           console.log('Recipes fetched:', response.data[0].image);
