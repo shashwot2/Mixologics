@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native';
 import {onAuthStateChanged} from '@auth/auth';
-
+import {UserProvider} from '@auth/authContext';
 import HomeScreen from '@components/HomeScreen/HomeScreen';
 import LoginScreen from '@components/LoginScreen/LoginScreen';
 import {Text, View} from 'react-native';
@@ -18,6 +18,7 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaView style={{flex:1}}>
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
@@ -35,6 +36,7 @@ const App: React.FC = () => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </UserProvider>
     </SafeAreaView>
   );
 };
