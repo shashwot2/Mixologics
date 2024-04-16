@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text, Image, ScrollView, StyleSheet } from 'rea
 import Icon from 'react-native-vector-icons/Ionicons';
 const RecipeDetailScreen = ({ route, navigation }) => {
     const { recipe } = route.params;
-
+    console.log(recipe.steps)
     return (
         <ScrollView style={styles.container}>
             <View style={styles.imageHeader}>
