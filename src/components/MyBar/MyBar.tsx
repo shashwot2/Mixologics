@@ -1,6 +1,7 @@
-import { BottomTabView } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import Config from 'react-native-config';
+import { launchImageLibrary } from 'react-native-image-picker'
 import {
   View,
   TextInput,
@@ -29,6 +30,7 @@ const MyBarHeader = ({ onAdd }) => (
 const MyBar: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('spirits');
   const [isModalVisible, setModalVisible] = useState(false);
+  const [imageUri, setImageUri] = useState('');
   const dummyData = {
     userName: "defaultUser",
 
@@ -100,45 +102,104 @@ const MyBar: React.FC = () => {
     flavorings: []
   };
   const [myBarData, setMyBarData] = useState(initialData);
-  const fetchData = async () => {
+
+  const uploadImage = async (imageUri) => {
+    const data = new FormData();
+    data.append('file', {
+      name: 'ingredient.jpg',
+      type: 'image/jpeg',
+      uri: imageUri
+    });
+
     try {
-      const response = await fetch(`http://192.168.1.172:3000/api/mybar/shashwot_07@hotmail.com`);
+      const response = await fetch(`http://${Config.ip}:3000/api/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: data,
+      });
+
+      const responseJson = await response.json();
+      if (!response.ok) {
+        throw new Error('Upload failed:', responseJson.message);
+      }
+      return responseJson.location;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return null;
+    }
+  };
+  const handleRecipeImageUpload = () => {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+      mediaType: 'photo',
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        const source = { uri: response.assets[0].uri };
+        setImageUri(source.uri);
+      }
+    });
+  };
+  const fetchData = async () => {
+    console.log("Fetching data...");
+    try {
+      const response = await fetch(`http://${Config.ip}:3000/api/mybar/shashwot_07@hotmail.com`);
       const data = await response.json();
       if (response.ok) {
         setMyBarData(data);
       } else {
-        setMyBarData(dummyData);
         throw new Error('Failed to fetch data');
       }
     } catch (error) {
+      setMyBarData(dummyData)
       setError('Error fetching data');
       console.error('Error fetching data:', error);
     }
   };
   useEffect(() => {
-    fetchData();
+    fetchData().then(() => {
+      console.log("Data fetch attempt completed");
+    });
   }, []);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  const addIngredient = () => {
+  const addIngredient = async () => {
+    let imageUrl = '';
+
+    if (imageUri) {
+      imageUrl = await uploadImage(imageUri);
+    }
+    console.log("imageuri is " , imageUri)
+    console.log("imageurl is " , imageUrl)
     const newIngredient = {
       id: Math.random().toString(36).substr(2, 9),
       drinkName: ingredientName,
       category: ingredientCategory,
-      icon: ingredientIcon
+      icon: imageUrl
     };
+    console.log('New Ingredient to Save:', newIngredient); 
 
     setMyBarData(prevData => {
       const updatedData = { ...prevData };
 
-      if (!updatedData[newIngredient.category]) {
+       if (!updatedData[newIngredient.category]) {
         updatedData[newIngredient.category] = [];
       }
-
       updatedData[newIngredient.category].push(newIngredient);
-      console.log("Updated data:", updatedData);
-      saveIngredient({ ...updatedData, userName: userEmail });
+      console.log("After push, ", updatedData)
+      saveIngredient(updatedData);  // This should handle the POST request
       return updatedData;
     });
 
@@ -151,7 +212,7 @@ const MyBar: React.FC = () => {
     updatedData = { ...updatedData, 'userName': userEmail }
     console.log("New Ingredient:", updatedData)
     try {
-      const response = await fetch('http://192.168.1.172:3000/api/mybar', {
+      const response = await fetch(`http://${Config.ip}:3000/api/mybar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,16 +233,39 @@ const MyBar: React.FC = () => {
   const addItem = category => {
     toggleModal(category);
   };
-  // Function to resolve the correct image
-  const resolveIcon = iconPath => {
-    const iconName = iconPath.split('/').pop();
-    const iconMap = {
-      'vodka.png': require('@assets/mybaricons/vodka.png'),
-      'champagne.png': require('@assets/mybaricons/champagne.png'),
-      'whisky.png': require('@assets/mybaricons/whisky.png'),
-      'coke.png': require('@assets/mybaricons/coke.jpg'),
+  const resolveAsset = (path) => {
+    const baseUrl = "https://pub-6d9459f727474eb0a721f2528d5ae857.r2.dev/";
+    if (typeof path !== 'string') {
+      path = String(path);
+    }
+    if (typeof path === 'string' && path.startsWith('uploads/')) {
+      return { uri: `${baseUrl}${encodeURIComponent(path)}` };  
+    }
+
+    const assetMap = {
+      '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
+      '@assets/recipes/manhattan/step2.png': require('@assets/recipes/manhattan/step2.png'),
+      '@assets/recipes/manhattan/step3.png': require('@assets/recipes/manhattan/step3.png'),
+      '@assets/recipes/bellini.png': require('@assets/recipes/bellini.png'),
+      '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
+      '@assets/mybaricons/vodka.png': require('@assets/mybaricons/vodka.png'),
+      '@assets/mybaricons/champagne.png': require('@assets/mybaricons/champagne.png'),
+      '@assets/mybaricons/whisky.png': require('@assets/mybaricons/whisky.png'),
+      '@assets/mybaricons/coke.png': require('@assets/mybaricons/coke.png'),
     };
-    return iconMap[iconName];
+
+    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
+    const match = path.match(requirePattern);
+    if (match) {
+      return assetMap[match[1]];  // Using match[1] which is the captured path
+    } else if (typeof path === 'string' && path.match(/^https?:\/\//)) {
+      return { uri: path };
+    } else if (path in assetMap) {
+      return assetMap[path];
+    } else if (typeof path === 'string') {
+      return path;
+    }
+    return require('@assets/placeholder.png'); // Fallback if nothing matches
   };
   return (
     <View style={styles.container}>
@@ -223,7 +307,7 @@ const MyBar: React.FC = () => {
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <Image source={resolveIcon(item.icon)} style={styles.icon} />
+            <Image source={resolveAsset(item.icon)} style={styles.icon} />
             <Text style={styles.itemText}>{item.drinkName}</Text>
           </View>
         )}
@@ -264,12 +348,10 @@ const MyBar: React.FC = () => {
               </Picker>
 
               <Text style={styles.modalText}>Photo</Text>
-              <TextInput
-                style={styles.inputBox}
-                value={ingredientIcon}
-                onChangeText={setIngredientIcon}
-              />
-
+              <TouchableOpacity onPress={handleRecipeImageUpload} style={styles.button}>
+                <Text style={styles.textStyle}>Pick Image</Text>
+              </TouchableOpacity>
+              {imageUri && <Image source={{ uri: imageUri }} style={styles.icon} />}
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={toggleModal}

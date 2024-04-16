@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useUser } from '@components/auth/authContext';
 import testprofile from '@assets/profile/testprofile.png';
 const postsData = [
   {
@@ -32,6 +33,8 @@ const postsData = [
   },
 ];
   const Profile: React.FC = ({ }) => {
+    const { user } = useUser();
+    console.log("user:", user)
     const renderPost = ({ item }) => (
       <View style={styles.postCard}>
         <View style={styles.postHeader}>
@@ -71,10 +74,10 @@ const postsData = [
         ListHeaderComponent={
           <>
             <View style={styles.header}>
-              <Image style={styles.profilePic} source={testprofile} />
+              <Image style={styles.profilePic} source={{uri: user.photoURL}} />
               <View style={styles.textbox}>
-                <Text style={styles.username}>Connecteur</Text>
-                <Text style={styles.userId}>User ID: { }</Text>
+                <Text style={styles.username}>{user.displayName}</Text>
+                <Text style={styles.userId}>User ID:  {user?.uid || "Unknown"}</Text>
               </View>
             </View>
             <View style={styles.statsContainer}>

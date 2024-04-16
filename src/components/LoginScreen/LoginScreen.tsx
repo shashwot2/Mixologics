@@ -1,26 +1,39 @@
 import React from 'react';
-import {SafeAreaView, View, Text, StyleSheet} from 'react-native';
+import {SafeAreaView, View, Text, StyleSheet, Alert} from 'react-native';
 import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import {signInWithGoogle} from '@auth/auth';
+import { useUser } from '@components/auth/authContext';
 
 const LoginScreen: React.FC = () => {
+  const { setUser } = useUser();
+  const handleGoogleSignIn = () => {
+    signInWithGoogle(setUser)
+      .then((userCredential) => {
+        if (!userCredential) {
+          Alert.alert('Sign In Failed', 'No user data received.');
+        }
+      })
+      .catch((error) => {
+        console.error('Login failed:', error);
+        Alert.alert('Login Error', 'Failed to sign in with Google.');
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Welcome to Mixologics!</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
-
         <GoogleSigninButton
-          style={{width: 192, height: 48}}
+          style={{ width: 192, height: 48 }}
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Dark}
-          onPress={signInWithGoogle}
+          onPress={handleGoogleSignIn}
         />
       </View>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

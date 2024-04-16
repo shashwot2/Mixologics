@@ -1,7 +1,8 @@
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-
+import Config from 'react-native-config';
 
 const ItemSeparator = () => (
   <View style={{ height: 20 }} />
@@ -98,8 +99,16 @@ const MyRecipes: React.FC = ({ navigation }) => {
       image: require('@assets/recipes/manhattan/manhattan.png')
     },
   ]);
+
   const resolveAsset = (path) => {
+    const baseUrl = "https://pub-6d9459f727474eb0a721f2528d5ae857.r2.dev/";
     console.log('path:', path);
+    if (typeof path !== 'string') {
+      path = String(path);
+    }
+    if (typeof path === 'string' && path.startsWith('uploads/')) {
+      return { uri: `${baseUrl}${encodeURIComponent(path)}` };  // Create a full URL for the image
+    }
 
     const assetMap = {
       '@assets/recipes/manhattan/manhattan.png': require('@assets/recipes/manhattan/manhattan.png'),
@@ -109,10 +118,8 @@ const MyRecipes: React.FC = ({ navigation }) => {
       '@assets/recipes/bloodymary.png': require('@assets/recipes/bloodymary.png'),
     };
 
-    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;  // This regex should now correctly match and capture the path
+    const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
     const match = path.match(requirePattern);
-    console.log('Regex match:', match);
-
     if (match) {
       console.log('Matched path:', match[1]);
       return assetMap[match[1]];  // Using match[1] which is the captured path
@@ -124,7 +131,7 @@ const MyRecipes: React.FC = ({ navigation }) => {
       return assetMap[path];
     } else if (typeof path === 'string') {
       console.log('Fallback URI:', path);
-      return { uri: path };
+      return path;
     }
 
     console.log('Using placeholder for path:', path);
@@ -157,22 +164,28 @@ const MyRecipes: React.FC = ({ navigation }) => {
       <Text style={styles.addNewRecipeText}>+</Text>
     </TouchableOpacity>
   );
-
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await axios.get('http://192.168.1.172:3000/api/recipes');
-        if (response.status === 200) {
-          setRecipes(response.data);
-          console.log('Recipes fetched:', response.data[0].image);
-        }
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
+  const fetchRecipes = async () => {
+    try {
+      const response = await axios.get(`http://${Config.ip}:3000/api/recipes`);
+      if (response.status === 200) {
+        setRecipes(response.data);
+        console.log('Recipes fetched:', response.data[0].image);
       }
-    };
-
+    } catch (error) {
+      console.error('Failed to fetch recipes:', error);
+    }
+  };
+  //For when the user goes it the first time
+  useEffect(() => {
     fetchRecipes();
   }, []);
+  // for navigation through to children pages
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecipes();
+      return () => { };
+    }, [])
+  );
   const [selectedCategory, setSelectedCategory] = useState('Classic');
   const [searchQuery, setSearchQuery] = useState('');
   const filteredRecipes = recipes.filter(recipe => {
