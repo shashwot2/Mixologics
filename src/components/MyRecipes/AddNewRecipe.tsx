@@ -43,13 +43,16 @@ const AddNewRecipe = ({ navigation }) => {
     const submitRecipe = async () => {
         let imageUrl = recipeImage ? await uploadImage(recipeImage) : null;
 
-        const stepsWithImages = await Promise.all(instructions.map(async (instruction) => {
+        const stepsWithImages = await Promise.all(instructions.map(async (instruction, index) => {
             let image = null;
             if (instruction.imageUrl) {
                 image = await uploadImage(instruction.imageUrl);
             }
-            return { ...instruction, image };
+            return {
+                ...instruction, image, stepNumber: index + 1, description: instruction.text
+            };
         }));
+        
 
         const recipeData = {
             name: recipeName,

@@ -1,8 +1,10 @@
+import GradientText from '@components/utils/LinearGradient';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Config from 'react-native-config';
+
 
 const ItemSeparator = () => (
   <View style={{ height: 20 }} />
@@ -102,7 +104,6 @@ const MyRecipes: React.FC = ({ navigation }) => {
 
   const resolveAsset = (path) => {
     const baseUrl = "https://pub-6d9459f727474eb0a721f2528d5ae857.r2.dev/";
-    console.log('path:', path);
     if (typeof path !== 'string') {
       path = String(path);
     }
@@ -121,20 +122,15 @@ const MyRecipes: React.FC = ({ navigation }) => {
     const requirePattern = /^require\(['"](@assets\/[^'"]+)['"]\)$/;
     const match = path.match(requirePattern);
     if (match) {
-      console.log('Matched path:', match[1]);
       return assetMap[match[1]];  // Using match[1] which is the captured path
     } else if (typeof path === 'string' && path.match(/^https?:\/\//)) {
-      console.log('URL:', path);
       return { uri: path };
     } else if (path in assetMap) {
-      console.log('Direct map access:', path);
       return assetMap[path];
     } else if (typeof path === 'string') {
-      console.log('Fallback URI:', path);
       return path;
     }
 
-    console.log('Using placeholder for path:', path);
     return require('@assets/placeholder.png'); // Fallback if nothing matches
   };
 
@@ -169,7 +165,6 @@ const MyRecipes: React.FC = ({ navigation }) => {
       const response = await axios.get(`http://${Config.ip}:3000/api/recipes`);
       if (response.status === 200) {
         setRecipes(response.data);
-        console.log('Recipes fetched:', response.data[0].image);
       }
     } catch (error) {
       console.error('Failed to fetch recipes:', error);
@@ -198,17 +193,30 @@ const MyRecipes: React.FC = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.filterbuttons}>
+        <View style={styles.filterButtons}>
           <TouchableOpacity onPress={() => setSelectedCategory('Classic')}>
-            <Text style={[styles.headerText, selectedCategory === 'Classic' && styles.activeHeaderText]}>Classic</Text>
+            {selectedCategory === 'Classic' ? (
+              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Classic</GradientText>
+            ) : (
+              <Text style={styles.headerText} >Classic</Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectedCategory('Saved')}>
-            <Text style={[styles.headerText, selectedCategory === 'Saved' && styles.activeHeaderText]}>Saved</Text>
+            {selectedCategory === 'Saved' ? (
+              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Saved</GradientText>
+            ) : (
+              <Text style={[styles.headerText, ]}>Saved</Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectedCategory('Created')}>
-            <Text style={[styles.headerText, selectedCategory === 'Created' && styles.activeHeaderText]}>Created</Text>
+            {selectedCategory === 'Created' ? (
+              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Created</GradientText>
+            ) : (
+              <Text style={[styles.headerText,]}>Created</Text>
+            )}
           </TouchableOpacity>
         </View>
+
         <TextInput
           style={styles.searchbar}
           placeholder="Search"
@@ -230,6 +238,12 @@ const MyRecipes: React.FC = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  filterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
   addNewRecipeButton: {
     height: 196,
     justifyContent: 'center',
@@ -247,28 +261,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#050C1C',
   },
-  activeHeaderText: {
-    color: '#FFD700',
-  },
-
   header: {
     backgroundColor: '#141B25',
     width: '100%',
-    paddingVertical: 5,
+    paddingVertical: 20,
   },
   filterbuttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   headerText: {
-    paddingTop: 65,
+    fontFamily:'Roboto',
+    fontSize:16,
+    paddingVertical:25,
     paddingLeft: 15,
     paddingRight: 15,
     color: 'white'
   },
   searchbar: {
     backgroundColor: "#242934",
-    margin: 20,
+    marginHorizontal:20,
+    marginBottom:10,
     height: 40,
     paddingLeft: 10,
     color: '#818B99',
