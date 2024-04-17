@@ -1,8 +1,8 @@
 import React from 'react';
-import {SafeAreaView, View, Text, StyleSheet, Alert} from 'react-native';
-import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
-import {signInWithGoogle} from '@auth/auth';
+import { SafeAreaView, Image, View, Text, StyleSheet, Alert, Button, ImageBackground } from 'react-native';
+import { signInWithGoogle } from '@auth/auth';
 import { useUser } from '@components/auth/authContext';
+import GradientText from '@components/utils/LinearGradient';
 
 const LoginScreen: React.FC = () => {
   const { setUser } = useUser();
@@ -21,16 +21,20 @@ const LoginScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Welcome to Mixologics!</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
-        <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={handleGoogleSignIn}
-        />
-      </View>
+      <ImageBackground
+        source={require('@assets/logo.png')}
+        style={styles.container}
+        resizeMode="stretch"
+      >
+        <View style={styles.innerContainer}>
+          <Text style={styles.title}>Sign in to continue</Text>
+          <Button
+            title='Sign in with google'
+            style={{ width: 192, height: 48, color: '#141B25' }}
+            onPress={handleGoogleSignIn}
+          >Sign in with google</Button>
+        </View>
+        </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -39,6 +43,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%', 
+    height: '100%', 
   },
   innerContainer: {
     width: '80%',
@@ -48,6 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: 'white',
   },
   subtitle: {
     fontSize: 16,

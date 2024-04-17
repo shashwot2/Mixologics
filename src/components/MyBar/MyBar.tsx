@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import Config from 'react-native-config';
 import { launchImageLibrary } from 'react-native-image-picker'
+import GradientText from '@components/utils/LinearGradient';
 import {
   View,
   TextInput,
@@ -101,7 +102,7 @@ const MyBar: React.FC = () => {
     herbs: [],
     flavorings: []
   };
-  const [myBarData, setMyBarData] = useState(initialData);
+  const [myBarData, setMyBarData] = useState(dummyData);
 
   const uploadImage = async (imageUri) => {
     const data = new FormData();
@@ -141,7 +142,7 @@ const MyBar: React.FC = () => {
 
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        console.log('User ncelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
@@ -168,9 +169,11 @@ const MyBar: React.FC = () => {
   };
   useEffect(() => {
     fetchData().then(() => {
-      console.log("Data fetch attempt completed");
     });
   }, []);
+  const capitalizeFirstWord = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -181,24 +184,20 @@ const MyBar: React.FC = () => {
     if (imageUri) {
       imageUrl = await uploadImage(imageUri);
     }
-    console.log("imageuri is " , imageUri)
-    console.log("imageurl is " , imageUrl)
     const newIngredient = {
       id: Math.random().toString(36).substr(2, 9),
       drinkName: ingredientName,
       category: ingredientCategory,
       icon: imageUrl
     };
-    console.log('New Ingredient to Save:', newIngredient); 
 
     setMyBarData(prevData => {
       const updatedData = { ...prevData };
 
-       if (!updatedData[newIngredient.category]) {
+      if (!updatedData[newIngredient.category]) {
         updatedData[newIngredient.category] = [];
       }
       updatedData[newIngredient.category].push(newIngredient);
-      console.log("After push, ", updatedData)
       saveIngredient(updatedData);  // This should handle the POST request
       return updatedData;
     });
@@ -239,7 +238,7 @@ const MyBar: React.FC = () => {
       path = String(path);
     }
     if (typeof path === 'string' && path.startsWith('uploads/')) {
-      return { uri: `${baseUrl}${encodeURIComponent(path)}` };  
+      return { uri: `${baseUrl}${encodeURIComponent(path)}` };
     }
 
     const assetMap = {
@@ -285,13 +284,9 @@ const MyBar: React.FC = () => {
                   activeCategory === category && styles.activeTab,
                 ]}>
                 {isActive ? (
-                  <LinearGradient
-                    colors={['#FF34D3', '#0094FF']}
-                    style={styles.gradient}>
-                    <Text style={styles.tabText}>{category}</Text>
-                  </LinearGradient>
+                  <GradientText style={styles.tabText}>{capitalizeFirstWord(category)}</GradientText>
                 ) : (
-                  <Text style={styles.tabText}>{category}</Text>
+                  <Text style={[styles.tabText, { color: "white" }]}>{capitalizeFirstWord(category)}</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -440,8 +435,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   tabText: {
-    color: 'white',
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: 'white'
   },
   itemContainer: {
     flex: 1,

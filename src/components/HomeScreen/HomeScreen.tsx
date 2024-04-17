@@ -82,35 +82,33 @@ const HomeScreen: React.FC = () => {
           backgroundColor: '#141B25',
           borderTopWidth: 0,
           display: getTabBarVisibility(route),
-        },
-        tabBarStyle: {
-          backgroundColor: '#141B25',
+          paddingTop:5,
         },
       })}>
       <Tab.Screen
         name="MediaHome"
         component={MediaHome}
-        options={{ headerShown: false }}
+        options={{ headerShown: false , tabBarShowLabel: false}}
       />
       <Tab.Screen
         name="MyRecipes"
         component={MyRecipesStack}
-        options={{ headerShown: false }}
+        options={{ headerShown: false , tabBarShowLabel: false}}
       />
       <Tab.Screen
         name="AddPost"
         component={AddPost}
-        options={{ headerShown: false }}
+        options={{ headerShown: false , tabBarShowLabel: false}}
       />
       <Tab.Screen
         name="MyBar"
         component={MyBar}
-        options={{ headerShown: false }}
+        options={{ headerShown: false , tabBarShowLabel: false}}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{ headerShown: false }}
+        options={{ headerShown: false , tabBarShowLabel: false}}
       />
     </Tab.Navigator>
   );

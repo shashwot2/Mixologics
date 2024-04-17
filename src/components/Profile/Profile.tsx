@@ -3,43 +3,67 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useUser } from '@components/auth/authContext';
 import testprofile from '@assets/profile/testprofile.png';
+import emperor from '@assets/profile/emperorofman.jpg';
+import techpriestintial from '@assets/profile/techpriestinitial.jpg';
+import necronomicon from '@assets/profile/necronomicon.jpg';
+import khorne from '@assets/profile/khorne.jpg';
+import heretek from '@assets/profile/heretek.jpg';
+
 const postsData = [
-  {
-    id: '1',
-    username: 'Consectetur',
-    userProfilePic: testprofile,
-    postImage: testprofile,
-    likesCount: '13',
-    commentsCount: '4',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-  },
   {
     id: '2',
     username: 'Consectetur 2',
     userProfilePic: testprofile,
-    postImage: testprofile,
-    likesCount: '26',
-    commentsCount: '8',
-    caption: 'Pellentesque habitant morbi tristique...',
+    postImage: techpriestintial,
+    likesCount: '150',
+    commentsCount: '20',
+    caption: 'The adeptus mechanicus have homed me and showed me the certainity of steel',
   },
+  {
+    id: '1',
+    username: 'Consectetur',
+    userProfilePic: testprofile,
+    postImage: emperor,
+    likesCount: '200k',
+    commentsCount: '0',
+    caption: 'The Emperor Protects... Long live the reincarnation of the Omnissiah',
+  },
+  
   {
     id: '3',
     username: 'Consectetur 3',
     userProfilePic: testprofile,
-    postImage: testprofile,
-    likesCount: '39',
-    commentsCount: '12',
-    caption: 'Sed do eiusmod tempor incididunt...',
+    postImage: necronomicon,
+    likesCount: '5',
+    commentsCount: '5003',
+    caption: 'I found this book, knowledge cant be dangerous right? ',
+  },
+   {
+    id: '4',
+    username: 'Consectetur 3',
+    userProfilePic: testprofile,
+    postImage: khorne,
+    likesCount: '666',
+    commentsCount: '666',
+    caption: 'Blood for the blood god!',
+  },
+    {
+    id: '5',
+    username: 'Consectetur 3',
+    userProfilePic: testprofile,
+    postImage: heretek,
+    likesCount: '666',
+    commentsCount: '666',
+    caption: `Vex'halah nar qorlash!`,
   },
 ];
   const Profile: React.FC = ({ }) => {
     const { user } = useUser();
-    console.log("user:", user)
     const renderPost = ({ item }) => (
       <View style={styles.postCard}>
         <View style={styles.postHeader}>
-          <Image style={styles.postProfilePic} source={item.userProfilePic} />
-          <Text style={styles.postUsername}>{item.username}</Text>
+          <Image style={styles.postProfilePic} source={{uri: user.photoURL}} />
+          <Text style={styles.postUsername}>{user.displayName}</Text>
           <TouchableOpacity style={styles.postOptions}>
             <Icon name="ellipsis-h" size={20} color="#fff" />
           </TouchableOpacity>
@@ -60,7 +84,7 @@ const postsData = [
   
         <Text style={styles.postCaption}>
           {item.caption}
-          <Text style={styles.moreText}>more</Text>
+          {/* <Text style={styles.moreText}>more</Text> */}
         </Text>
       </View>
     );
@@ -82,15 +106,15 @@ const postsData = [
             </View>
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>12</Text>
-                <Text style={styles.statLabel}>Post</Text>
+                <Text style={styles.statNumber}>5</Text>
+                <Text style={styles.statLabel}>Posts</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>204</Text>
+                <Text style={styles.statNumber}>40,005</Text>
                 <Text style={styles.statLabel}>Followers</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>25</Text>
+                <Text style={styles.statNumber}>1</Text>
                 <Text style={styles.statLabel}>Following</Text>
               </View>
             </View>

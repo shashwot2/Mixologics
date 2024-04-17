@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, FlatList } from 'react-native';
 import testprofile from '@assets/profile/testprofile.png';
+import sarahdoe from '@assets/profile/sarahdoe.png';
+import drinkocean from '@assets/profile/drinkoverlookingocean.jpg';
+import jaimeoliverprofile from '@assets/profile/jaimeoliverprofile.jpg';
+import jaimeoliverfriedrice from '@assets/profile/jaimeoliverfriedrice.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import GradientText from '@components/utils/LinearGradient';
 const postsData = [
   {
     id: '1',
@@ -10,29 +15,43 @@ const postsData = [
     postImage: testprofile,
     likesCount: '13',
     commentsCount: '4',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+    caption: 'New profile pic, who dis?',
   },
   {
     id: '2',
-    username: 'Consectetur 2',
-    userProfilePic: testprofile,
-    postImage: testprofile,
+    username: 'Sarah Doe',
+    userProfilePic: sarahdoe,
+    postImage: drinkocean,
     likesCount: '26',
     commentsCount: '8',
-    caption: 'Pellentesque habitant morbi tristique...',
+    caption: 'I heard this a big thing now',
   },
   {
     id: '3',
-    username: 'Consectetur 3',
-    userProfilePic: testprofile,
-    postImage: testprofile,
-    likesCount: '39',
-    commentsCount: '12',
-    caption: 'Sed do eiusmod tempor incididunt...',
+    username: 'Jaime Oliver',
+    userProfilePic: jaimeoliverprofile,
+    postImage: jaimeoliverfriedrice,
+    likesCount: '15K',
+    commentsCount: '200',
+    caption: 'Just finished cooking this beautiful meal',
   },
 ];
+
 const MediaHome: React.FC = () => {
+  const [likedPosts, setLikedPosts] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+
+  const toggleLike = (postId) => {
+    setLikedPosts((currentLikedPosts) => {
+      const newLikedPosts = new Set(currentLikedPosts);
+      if (newLikedPosts.has(postId)) {
+        newLikedPosts.delete(postId);
+      } else {
+        newLikedPosts.add(postId);
+      }
+      return newLikedPosts;
+    });
+  };
 
   const handleSearch = (text) => {
     setSearchQuery(text);
@@ -54,8 +73,8 @@ const MediaHome: React.FC = () => {
       <Image style={styles.postImage} source={item.postImage} />
 
       <View style={styles.postInteractions}>
-        <TouchableOpacity>
-          <Icon name="heart" size={20} color="#fff" />
+        <TouchableOpacity onPress={() => toggleLike(item.id)}>
+          <Icon name="heart" size={20} color={likedPosts.has(item.id) ? 'red' : '#fff'} />
         </TouchableOpacity>
         <Text style={styles.likesCount}>{item.likesCount}</Text>
         <TouchableOpacity>
@@ -66,10 +85,10 @@ const MediaHome: React.FC = () => {
 
       <Text style={styles.postCaption}>
         {item.caption}
-        <Text style={styles.moreText}>more</Text>
       </Text>
     </View>
   );
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -84,7 +103,7 @@ const MediaHome: React.FC = () => {
                 <TouchableOpacity>
                   <Text style={styles.headerText}>Followed</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerText}>New</Text>
+                <GradientText style={{marginTop:60}}>New</GradientText>
                 <TouchableOpacity>
                   <Text style={styles.headerText}>Featured</Text>
                 </TouchableOpacity>
@@ -98,7 +117,10 @@ const MediaHome: React.FC = () => {
               />
             </View>
           </>
-        } />
+        }
+        extraData={likedPosts}  
+      />
+
     </View>
   )
 };
@@ -120,7 +142,9 @@ const styles = {
     justifyContent: 'space-between',
   },
   headerText: {
-    paddingTop: 65,
+    fontSize:16,
+    fontFamily:'Roboto',
+    marginTop:70,
     paddingLeft: 15,
     paddingRight: 15,
     color: 'white'
