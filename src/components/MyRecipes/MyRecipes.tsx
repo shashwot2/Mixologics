@@ -2,7 +2,7 @@ import GradientText from '@components/utils/LinearGradient';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { FlatList, TextInput, StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import Config from 'react-native-config';
 
 
@@ -133,6 +133,33 @@ const MyRecipes: React.FC = ({ navigation }) => {
 
     return require('@assets/placeholder.png'); // Fallback if nothing matches
   };
+  const handleDelete = (recipeId) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this recipe?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            axios.delete(`http://${Config.ip}:3000/api/recipes/${recipeId}`)
+              .then(response => {
+                console.log('Recipe deleted:', response);
+                setRecipes(currentRecipes => currentRecipes.filter(recipe => recipe.recipeId !== recipeId));
+              })
+              .catch(error => {
+                console.error('Failed to delete the recipe:', error);
+                Alert.alert('Error', 'Failed to delete the recipe.');
+              });
+          }
+        }
+      ]
+    );
+  };
 
   const renderRecipe = ({ item }) => {
     const imageSource = resolveAsset(item.image);
@@ -146,6 +173,11 @@ const MyRecipes: React.FC = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipe: { ...item, image: imageSource, steps: stepsWithResolvedImages } })}>
         <View style={styles.recipeContainer}>
           <Image style={styles.recipeCoverImg} source={imageSource} />
+          {item.category === 'Created' && (
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.recipeId)}>
+              <Text style={styles.deleteButtonText}>X</Text>
+            </TouchableOpacity>
+          )}
           <View style={styles.cocktailDetails}>
             <Text style={styles.cocktailName}>{item.name}</Text>
             <Text style={styles.cocktailBase}>Main Base: {item.base}</Text>
@@ -196,21 +228,21 @@ const MyRecipes: React.FC = ({ navigation }) => {
         <View style={styles.filterButtons}>
           <TouchableOpacity onPress={() => setSelectedCategory('Classic')}>
             {selectedCategory === 'Classic' ? (
-              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Classic</GradientText>
+              <GradientText style={{ marginTop: 5, fontFamily: 'Roboto', fontSize: 16 }}>Classic</GradientText>
             ) : (
               <Text style={styles.headerText} >Classic</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectedCategory('Saved')}>
             {selectedCategory === 'Saved' ? (
-              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Saved</GradientText>
+              <GradientText style={{ marginTop: 5, fontFamily: 'Roboto', fontSize: 16 }}>Saved</GradientText>
             ) : (
-              <Text style={[styles.headerText, ]}>Saved</Text>
+              <Text style={[styles.headerText,]}>Saved</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectedCategory('Created')}>
             {selectedCategory === 'Created' ? (
-              <GradientText style={{marginTop:5, fontFamily:'Roboto',fontSize:16 }}>Created</GradientText>
+              <GradientText style={{ marginTop: 5, fontFamily: 'Roboto', fontSize: 16 }}>Created</GradientText>
             ) : (
               <Text style={[styles.headerText,]}>Created</Text>
             )}
@@ -238,6 +270,19 @@ const MyRecipes: React.FC = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'black',
+    padding: 8,
+    borderRadius: 15,
+    zIndex: 2,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
   filterButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -271,17 +316,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerText: {
-    fontFamily:'Roboto',
-    fontSize:16,
-    paddingVertical:25,
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    paddingVertical: 25,
     paddingLeft: 15,
     paddingRight: 15,
     color: 'white'
   },
   searchbar: {
     backgroundColor: "#242934",
-    marginHorizontal:20,
-    marginBottom:10,
+    marginHorizontal: 20,
+    marginBottom: 10,
     height: 40,
     paddingLeft: 10,
     color: '#818B99',

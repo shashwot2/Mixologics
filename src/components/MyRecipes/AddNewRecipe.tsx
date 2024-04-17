@@ -3,6 +3,7 @@ import { Image, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Config from 'react-native-config';
+import uuid from 'react-native-uuid';
 
 const AddNewRecipe = ({ navigation }) => {
     const [recipeName, setRecipeName] = useState('');
@@ -12,6 +13,16 @@ const AddNewRecipe = ({ navigation }) => {
     const [instructions, setInstructions] = useState([{ text: '', imageUrl: null }]);
     const [instructionImages, setInstructionImages] = useState({});
     const [recipeImage, setRecipeImage] = useState(null);
+    const generateHash = (input) => {
+        let hash = 0;
+        if (input.length === 0) return hash;
+        for (let i = 0; i < input.length; i++) {
+            const char = input.charCodeAt(i);
+            hash = (hash << 5) - hash + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash.toString();
+    };
 
     const uploadImage = async (imageUri) => {
         const data = new FormData();
@@ -42,7 +53,9 @@ const AddNewRecipe = ({ navigation }) => {
     };
     const submitRecipe = async () => {
         let imageUrl = recipeImage ? await uploadImage(recipeImage) : null;
-
+        const timestamp = new Date().toISOString()
+        const hashInput = `${recipeName}${timestamp}`;
+        const recipeId = generateHash(hashInput);
         const stepsWithImages = await Promise.all(instructions.map(async (instruction, index) => {
             let image = null;
             if (instruction.imageUrl) {
@@ -52,9 +65,10 @@ const AddNewRecipe = ({ navigation }) => {
                 ...instruction, image, stepNumber: index + 1, description: instruction.text
             };
         }));
-        
+
 
         const recipeData = {
+            recipeId: recipeId,
             name: recipeName,
             base: mainBase,
             servings: servingSize,

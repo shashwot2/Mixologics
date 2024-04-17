@@ -13,7 +13,7 @@ const postsData = [
     username: 'Consectetur',
     userProfilePic: testprofile,
     postImage: testprofile,
-    likesCount: '13',
+    likesCount: 13,
     commentsCount: '4',
     caption: 'New profile pic, who dis?',
   },
@@ -22,7 +22,7 @@ const postsData = [
     username: 'Sarah Doe',
     userProfilePic: sarahdoe,
     postImage: drinkocean,
-    likesCount: '26',
+    likesCount: 25,
     commentsCount: '8',
     caption: 'I heard this a big thing now',
   },
@@ -31,7 +31,7 @@ const postsData = [
     username: 'Jaime Oliver',
     userProfilePic: jaimeoliverprofile,
     postImage: jaimeoliverfriedrice,
-    likesCount: '15K',
+    likesCount: 15000,
     commentsCount: '200',
     caption: 'Just finished cooking this beautiful meal',
   },
@@ -46,8 +46,10 @@ const MediaHome: React.FC = () => {
       const newLikedPosts = new Set(currentLikedPosts);
       if (newLikedPosts.has(postId)) {
         newLikedPosts.delete(postId);
+        postsData.find(post => post.id === postId).likesCount -= 1;
       } else {
         newLikedPosts.add(postId);
+        postsData.find(post => post.id === postId).likesCount += 1;
       }
       return newLikedPosts;
     });
